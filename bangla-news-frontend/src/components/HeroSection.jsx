@@ -134,23 +134,57 @@ const HeroSection = () => {
         </div>
       </div>
 
-      <div className="flex pt-4 pb-4 justify-evenly w-full items-center bg-[#1F2A44]">
-        <h2 className="text-[20px] text-white">
-          Hello World <br />
-          Hello World
-        </h2>
-        <h2 className="text-[20px] text-white">
-          Hello World <br />
-          Hello World
-        </h2>
-        <h2 className="text-[20px] text-white">
-          Hello World <br />
-          Hello World
-        </h2>
-        <h2 className="text-[20px] text-white">
-          Hello World <br />
-          Hello World
-        </h2>
+      <div className="flex flex-wrap gap-4 justify-evenly items-center bg-[#1F2A44] py-4 px-2 text-white text-sm md:text-base">
+        <div className="flex items-center gap-2">
+          <img
+            src="/assets/icons/icons8-newspaper-100.png"
+            alt="Newspaper Icon"
+            width="30px"
+            height="30px"
+            className="mr-1"
+          />
+          <span className="text-[18px]">20+ Top News-portal</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <img
+            src="/assets/icons/icons8-live-100.png"
+            alt="Live Icon"
+            width="30px"
+            height="30px"
+          />
+          <span className="text-[18px]">Live Breaking Updates</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="icon icon-tabler icons-tabler-outline icon-tabler-alphabet-bangla"
+          >
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M14 12c.904 -.027 3 2 3 7" />
+            <path d="M10 11c0 -.955 0 -2 .786 -2.677c1.262 -1.089 3.025 .55 3.2 2.06c.086 .741 -.215 3.109 -1.489 4.527c-.475 .53 -.904 .992 -1.711 1.074c-.75 .076 -1.364 -.122 -2.076 -.588c-1.138 -.743 -2.327 -1.997 -3.336 -3.73c-1.078 -1.849 -1.66 -3.113 -2.374 -5.666" />
+            <path d="M7.37 7.072c.769 -.836 5.246 -4.094 8.4 -.202c.382 .472 .573 .708 .9 1.63c.326 .921 .326 1.562 .326 2.844v7.656" />
+            <path d="M17 10c0 -1.989 1.5 -4 4 -4" />
+          </svg>
+
+          <span className="text-[18px]">Bangla Language Focused</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <img
+            src="/assets/icons/icons8-repeat-one-100.png"
+            alt="Update Icon Icon"
+            width="30px"
+            height="30px"
+          />
+          <span className="text-[18px]">Updated Every Hour</span>
+        </div>
       </div>
     </div>
   );
