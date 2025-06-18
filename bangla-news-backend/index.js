@@ -2,14 +2,16 @@ const express = require("express");
 const Parser = require("rss-parser");
 const cron = require("node-cron");
 const cors = require("cors");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
 const app = express();
 const port = 4000;
 const parser = new Parser();
 
-app.use(cors()); // Enable CORS for all origins
+app.use(cors()); // Allow all origins – adjust as needed
 
-// RSS feed sources
+/* ───────────────────────────────── RSS SOURCES ────────────────────────────── */
 const rssFeeds = {
   binodon: [
     "https://news.google.com/rss/search?q=%E0%A6%AC%E0%A6%BF%E0%A6%A8%E0%A7%8B%E0%A6%A6%E0%A6%A8+when:1d&hl=bn&gl=BD&ceid=BD:bn",
@@ -20,13 +22,11 @@ const rssFeeds = {
   topnews: [
     "https://www.prothomalo.com/feed",
     "https://www.kalerkantho.com/rss.xml",
-    // "https://www.jugantor.com/rss.xml",
     "https://samakal.com/rss.xml",
-    // "https://bangla.bdnews24.com/rss.xml",
   ],
 };
 
-// In-memory news cache
+/* ──────────────────────────────── IN‑MEMORY CACHE ─────────────────────────── */
 let newsCache = {
   binodon: [],
   kheladhula: [],
@@ -34,9 +34,9 @@ let newsCache = {
   lastUpdated: null,
 };
 
-// Fetch and cache news function with image extraction
+/* ─────────────────────────── FETCH + CACHE ALL FEEDS ──────────────────────── */
 async function fetchAndCacheNews() {
-  console.log("Fetching news from RSS feeds...");
+  console.log("🔄  Fetching news from RSS feeds…");
 
   async function fetchCategoryFeeds(feeds) {
     const allItems = [];
@@ -53,14 +53,14 @@ async function fetchAndCacheNews() {
             pubDate: item.pubDate,
             source,
             image:
-              item.enclosure?.url || // Image from enclosure tag
-              (item["media:content"] && item["media:content"]["$"]?.url) || // Media content image
+              item.enclosure?.url ||
+              (item["media:content"] && item["media:content"]["$"]?.url) ||
               null,
             summary: item.contentSnippet || item.content || item.summary || "",
           });
         });
-      } catch (error) {
-        console.error(`Failed to fetch feed: ${feedUrl}`, error.message);
+      } catch (err) {
+        console.error(`⚠️  Failed to fetch feed: ${feedUrl}`, err.message);
       }
     }
 
@@ -72,36 +72,78 @@ async function fetchAndCacheNews() {
   newsCache.topnews = await fetchCategoryFeeds(rssFeeds.topnews);
   newsCache.lastUpdated = new Date();
 
-  console.log("News fetched and cached at", newsCache.lastUpdated);
+  console.log("✅  News cached at", newsCache.lastUpdated.toLocaleString());
 }
 
-// Schedule daily update at 6AM
-cron.schedule("0 6 * * *", () => {
-  fetchAndCacheNews();
-});
+/* ───────────────────────────── CRON SCHEDULE (6 AM) ───────────────────────── */
+cron.schedule("0 6 * * *", fetchAndCacheNews);
 
-// Fetch once at startup
+/* ───────────────────────────── INITIAL PRIMING ────────────────────────────── */
 fetchAndCacheNews();
 
-// API endpoint to serve all news categories
+/* ─────────────────────────────── API ENDPOINTS ────────────────────────────── */
+/** GET /news/all – combined list across all categories */
 app.get("/news/all", (req, res) => {
   const { lastUpdated, ...categories } = newsCache;
 
   const combinedNews = Object.entries(categories)
-    .filter(([key]) => key !== "lastUpdated")
     .flatMap(([category, items]) =>
-      items.map((item) => ({
-        ...item,
-        category,
-      }))
+      items.map((item) => ({ ...item, category }))
     );
 
-  res.json({
-    lastUpdated,
-    news: combinedNews,
-  });
+  res.json({ lastUpdated, news: combinedNews });
 });
 
+/** GET /news/full?url=<ENCODED_URL> – scrape full article text */
+app.get("/news/full", async (req, res) => {
+  const { url } = req.query;
+  if (!url) {
+    return res.status(400).json({ error: "Missing URL" });
+  }
+
+  try {
+    /* Many Bangla news sites block generic bots; pretend to be Chrome. */
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
+          "(KHTML, like Gecko) Chrome/125 Safari/537.36",
+      },
+      timeout: 10_000,
+    });
+
+    const $ = cheerio.load(response.data);
+
+    /* Try a series of increasingly broad selectors. */
+    const candidateSelectors = [
+      "article",
+      ".content, .article-content, .entry-content, .post-content",
+      "main",
+      "body",
+    ];
+
+    let article = "";
+    for (const sel of candidateSelectors) {
+      article = $(sel).text().replace(/\s+/g, " ").trim();
+      if (article.length > 50) break;
+    }
+
+    if (article.length < 50) {
+      return res
+        .status(404)
+        .json({ error: "Could not extract article content" });
+    }
+
+    res.json({ content: article });
+  } catch (err) {
+    console.error("❌  Failed to fetch article:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch article", details: err.message });
+  }
+});
+
+/* ─────────────────────────────── START SERVER ─────────────────────────────── */
 app.listen(port, () => {
-  console.log(`News backend running at http://localhost:${port}`);
+  console.log(`🚀  News back‑end running at http://localhost:${port}`);
 });
