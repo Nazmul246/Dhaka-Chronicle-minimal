@@ -11,7 +11,7 @@ const HeroSection = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     let particles = [];
-    const particleCount = 120;
+    const particleCount = 60;
     const mouse = { x: null, y: null };
 
     canvas.width = canvas.offsetWidth;
@@ -112,7 +112,7 @@ const HeroSection = () => {
           </h1>
 
           {/* Modern Calendar Picker */}
-          <div className="flex items-center justify-between gap-4 bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg w-[90%] max-w-[600px] border border-white/20 flex-wrap md:flex-nowrap">
+          <div className="flex items-center justify-between gap-4 bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg w-[90%] max-w-[620px] border border-white/20 flex-wrap md:flex-nowrap">
             <div className="flex items-center gap-2 w-full">
               <label htmlFor="date" className="text-white text-xl">
                 📅

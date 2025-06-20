@@ -48,18 +48,18 @@ const NewsCard = ({ data }) => {
         rel="noopener noreferrer"
         className="flex-1"
       >
-        <h3 className="text-xl font-bold text-gray-900 mb-3 leading-snug line-clamp-2">
+        <h3 className="text-xl font-bold text-gray-900 mb-3 leading-snug line-clamp-2 font-notoSans">
           {data.title}
         </h3>
-        <p className="text-base text-gray-700 mb-2 line-clamp-3">
+        <p className="text-base text-gray-700 mb-2 line-clamp-3 font-balooDa">
           {data.summary}
         </p>
         <div className="text-sm text-gray-600 mb-1 font-semibold">
-          Source: <span className="text-gray-800">{data.source}</span>
+          Source: <span className="text-gray-800 text-xs">{data.source}</span>
         </div>
-        <p className="text-sm text-gray-500">
+        {/* <p className="text-sm text-gray-500">
           {new Date(data.pubDate).toLocaleString()}
-        </p>
+        </p> */}
       </a>
 
       <button onClick={handleDownloadPDF} className="button-ones mt-4">

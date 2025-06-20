@@ -22,7 +22,9 @@ const rssFeeds = {
   topnews: [
     "https://www.prothomalo.com/feed",
     "https://www.kalerkantho.com/rss.xml",
-    "https://samakal.com/rss.xml",
+    "https://www.banglatribune.com/feed/",
+    "https://www.bd24live.com/bangla/feed/",
+    "https://www.risingbd.com/rss/rss.xml",
   ],
 };
 
@@ -35,41 +37,53 @@ let newsCache = {
 };
 
 /* ─────────────────────────── FETCH + CACHE ALL FEEDS ──────────────────────── */
-async function fetchAndCacheNews() {
-  console.log("🔄  Fetching news from RSS feeds…");
+async function fetchCategoryFeeds(feeds, categoryKey = "") {
+  const allFeeds = [];
 
-  async function fetchCategoryFeeds(feeds) {
-    const allItems = [];
+  for (const feedUrl of feeds) {
+    try {
+      const feed = await parser.parseURL(feedUrl);
+      const items = feed.items.map((item) => ({
+        title: item.title,
+        link: item.link,
+        pubDate: item.pubDate,
+        source: feed.title || "Unknown source",
+        image:
+          item.enclosure?.url ||
+          (item["media:content"] && item["media:content"]["$"]?.url) ||
+          null,
+        summary: item.contentSnippet || item.content || item.summary || "",
+      }));
 
-    for (const feedUrl of feeds) {
-      try {
-        const feed = await parser.parseURL(feedUrl);
-        const source = feed.title || "Unknown source";
+      allFeeds.push(items);
+    } catch (err) {
+      console.error(`⚠️  Failed to fetch feed: ${feedUrl}`, err.message);
+    }
+  }
 
-        feed.items.forEach((item) => {
-          allItems.push({
-            title: item.title,
-            link: item.link,
-            pubDate: item.pubDate,
-            source,
-            image:
-              item.enclosure?.url ||
-              (item["media:content"] && item["media:content"]["$"]?.url) ||
-              null,
-            summary: item.contentSnippet || item.content || item.summary || "",
-          });
-        });
-      } catch (err) {
-        console.error(`⚠️  Failed to fetch feed: ${feedUrl}`, err.message);
+  if (categoryKey === "topnews") {
+    // Interleave feeds
+    const maxLen = Math.max(...allFeeds.map((list) => list.length));
+    const interleaved = [];
+
+    for (let i = 0; i < maxLen; i++) {
+      for (const feedItems of allFeeds) {
+        if (feedItems[i]) interleaved.push(feedItems[i]);
       }
     }
 
-    return allItems;
+    return interleaved;
   }
 
-  newsCache.binodon = await fetchCategoryFeeds(rssFeeds.binodon);
-  newsCache.kheladhula = await fetchCategoryFeeds(rssFeeds.kheladhula);
-  newsCache.topnews = await fetchCategoryFeeds(rssFeeds.topnews);
+  return allFeeds.flat();
+}
+
+async function fetchAndCacheNews() {
+  console.log("🔄  Fetching news from RSS feeds…");
+
+  newsCache.binodon = await fetchCategoryFeeds(rssFeeds.binodon, "binodon");
+  newsCache.kheladhula = await fetchCategoryFeeds(rssFeeds.kheladhula, "kheladhula");
+  newsCache.topnews = await fetchCategoryFeeds(rssFeeds.topnews, "topnews");
   newsCache.lastUpdated = new Date();
 
   console.log("✅  News cached at", newsCache.lastUpdated.toLocaleString());
@@ -102,7 +116,6 @@ app.get("/news/full", async (req, res) => {
   }
 
   try {
-    /* Many Bangla news sites block generic bots; pretend to be Chrome. */
     const response = await axios.get(url, {
       headers: {
         "User-Agent":
@@ -113,8 +126,6 @@ app.get("/news/full", async (req, res) => {
     });
 
     const $ = cheerio.load(response.data);
-
-    /* Try a series of increasingly broad selectors. */
     const candidateSelectors = [
       "article",
       ".content, .article-content, .entry-content, .post-content",

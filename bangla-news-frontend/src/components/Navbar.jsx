@@ -14,13 +14,15 @@ const Navbar = () => {
         {/* Desktop + Tablet */}
         <ul className="hidden md:flex justify-between items-center pt-4 pb-4 px-4 lg:px-10">
           {/* Logo */}
-          <li className="font-bold text-xl">
-            <img
-              src="/assets/img/Logo.png"
-              width="200px"
-              alt="Dhaka Chronicle Vault"
-            />
-          </li>
+          <a href="/">
+            <li className="font-bold text-xl">
+              <img
+                src="/assets/img/Logo.png"
+                width="200px"
+                alt="Dhaka Chronicle Vault"
+              />
+            </li>
+          </a>
 
           {/* Search bar */}
           <li>
@@ -46,7 +48,7 @@ const Navbar = () => {
 
           {/* Date + Hamburger */}
           <li className="flex items-center gap-8">
-            <p className="flex items-center gap-2 text-sm">
+            <p className="flex items-center gap-2 text-sm text-[#0097b2] font-bold">
               <SlCalender />
               {date.toDateString()}
             </p>
@@ -87,11 +89,13 @@ const Navbar = () => {
 
           {/* Second Row: logo and hamburger */}
           <div className="flex justify-between items-center">
-            <img
-              src="/assets/Logo.png"
-              width="150px"
-              alt="Dhaka Chronicle Vault"
-            />
+            <a href="/">
+              <img
+                src="/assets/Logo.png"
+                width="150px"
+                alt="Dhaka Chronicle Vault"
+              />
+            </a>
 
             <button
               onClick={toggleMenu}
@@ -112,7 +116,7 @@ const Navbar = () => {
           <ul className="flex flex-col lg:flex-row justify-center gap-6 text-gray-800 text-lg px-4">
             <li>
               <a
-                href="#"
+                href="/"
                 className="hover:text-indigo-600 transition-all block py-1"
               >
                 Home

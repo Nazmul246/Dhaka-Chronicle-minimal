@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import NewsCard from "./NewsCard";
 import HeroSection from "./HeroSection";
 
@@ -9,6 +10,8 @@ const Home = () => {
     kheladhula: false,
     topnews: false,
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:4000/news/all")
@@ -39,7 +42,7 @@ const Home = () => {
 
   const renderCategory = (categoryKey, displayName) => {
     const items = newsData[categoryKey] || [];
-    const visibleItems = showAll[categoryKey] ? items : items.slice(0, 15);
+    const visibleItems = showAll[categoryKey] ? items : items.slice(0, 6);
 
     return (
       <section className="my-6">
@@ -59,13 +62,18 @@ const Home = () => {
           ))}
         </div>
 
-        {items.length > 5 && (
-          <button
-            onClick={() => toggleShowAll(categoryKey)}
-            className="mt-4 text-blue-600 hover:underline"
-          >
-            {showAll[categoryKey] ? "See Less" : "See More"}
-          </button>
+        {items.length > 5 && !showAll[categoryKey] && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => navigate(`/category/${categoryKey}`)}
+              className="relative inline-flex items-center px-6 py-2 mt-4 text-blue-600 border border-blue-600 rounded-full group overflow-hidden transition-all duration-300 ease-out hover:bg-blue-600 hover:text-white cursor-pointer"
+            >
+              <span className="absolute left-0 w-full h-0 transition-all duration-300 ease-out transform -translate-y-full bg-blue-600 group-hover:h-full group-hover:translate-y-0"></span>
+              <span className="relative z-10 font-semibold tracking-wide">
+                See More
+              </span>
+            </button>
+          </div>
         )}
       </section>
     );

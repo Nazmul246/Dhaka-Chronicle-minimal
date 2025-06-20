@@ -20,11 +20,12 @@ p {
 
 body {
   background-color: #f8f9fa;
+  font-family: "Poppins", sans-serif;
 }
 
 .font-notoSans {
   font-family: "Noto Sans Bengali", sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .font-balooDa {
@@ -97,7 +98,7 @@ body {
   display: block;
   padding: 10px 20px;
   color: #fff;
-  background-color: #248afe;
+  background-color: #0097b2;
   overflow: hidden;
   box-shadow: inset 0px 0px 0px 1px transparent;
 }
@@ -152,3 +153,6 @@ body {
 .button-ones:hover .button_lg::after {
   background-color: #fff;
 }
+
+
+/* footer */
