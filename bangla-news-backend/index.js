@@ -7,17 +7,33 @@ const cheerio = require("cheerio");
 
 const app = express();
 const port = 4000;
-const parser = new Parser();
 
-app.use(cors()); // Allow all origins – adjust as needed
+// Register <source> as a custom field
+const parser = new Parser({
+  customFields: {
+    item: ["source"],
+  },
+});
 
-/* ───────────────────────────────── RSS SOURCES ────────────────────────────── */
+app.use(cors());
+
+// RSS sources (same as before)
 const rssFeeds = {
   binodon: [
-    "https://news.google.com/rss/search?q=%E0%A6%AC%E0%A6%BF%E0%A6%A8%E0%A7%8B%E0%A6%A6%E0%A6%A8+when:1d&hl=bn&gl=BD&ceid=BD:bn",
+    "https://www.prothomalo.com/feed",
+    "https://www.kalerkantho.com/rss.xml",
+    "https://www.banglatribune.com/feed/",
+    "https://www.bd24live.com/bangla/feed/",
+    "https://www.risingbd.com/rss/rss.xml",
+    "https://news.google.com/rss/search?q=%E0%A6%AC%E0%A6%BF%E0%A6%A8%E0%A7%8B%E0%A6%A6%E0%A6%A8&hl=bn&gl=BD&ceid=BD:bn",
   ],
   kheladhula: [
-    "https://news.google.com/rss/search?q=%E0%A6%96%E0%A7%87%E0%A6%B2%E0%A6%BE%E0%A6%A7%E0%A7%81%E0%A6%B2%E0%A6%BE+when:1d&hl=bn&gl=BD&ceid=BD:bn",
+    "https://www.prothomalo.com/feed",
+    "https://www.kalerkantho.com/rss.xml",
+    "https://www.banglatribune.com/feed/",
+    "https://www.bd24live.com/bangla/feed/",
+    "https://www.risingbd.com/rss/rss.xml",
+    "https://news.google.com/rss/search?q=%E0%A6%96%E0%A7%87%E0%A6%B2%E0%A6%BE%E0%A6%A7%E0%A7%81%E0%A6%B2%E0%A6%BE&hl=bn&gl=BD&ceid=BD:bn",
   ],
   topnews: [
     "https://www.prothomalo.com/feed",
@@ -28,7 +44,7 @@ const rssFeeds = {
   ],
 };
 
-/* ──────────────────────────────── IN‑MEMORY CACHE ─────────────────────────── */
+// Cache (same)
 let newsCache = {
   binodon: [],
   kheladhula: [],
@@ -36,33 +52,68 @@ let newsCache = {
   lastUpdated: null,
 };
 
-/* ─────────────────────────── FETCH + CACHE ALL FEEDS ──────────────────────── */
+// Fetch & Cache logic (same)
 async function fetchCategoryFeeds(feeds, categoryKey = "") {
   const allFeeds = [];
+
+  const binodonKeywords = [
+    "বিনোদন", "চলচ্চিত্র", "তারকা", "সিনেমা", "নাটক", "গান",
+    "অভিনেতা", "অভিনেত্রী", "অভিনয়", "শুটিং", "গায়ক", "গায়িকা",
+    "মিউজিক", "ফিল্ম", "টেলিভিশন", "নায়ক", "নায়িকা", "সেলিব্রিটি",
+    "বায়োপিক", "ড্রামা", "কমেডি", "ওয়েব সিরিজ", "ওটিটি", "স্টার", "আনন্দ"
+  ];
+
+  const khelaKeywords = [
+    "খেলা", "ক্রিকেট", "ফুটবল", "ব্রাজিল", "আর্জেন্টিনা", "বিশ্বকাপ", "টি-টোয়েন্টি",
+    "ওয়ানডে", "টেস্ট", "সাকিব", "তামিম", "মুশফিক", "বাংলাদেশ দল", "ম্যাচ", "গোল",
+    "ব্যাটসম্যান", "বোলার", "ফিফা", "স্পোর্টস", "ক্রীড়া", "অলিম্পিক", "চ্যাম্পিয়নস লিগ",
+    "পিএসজি", "রিয়াল মাদ্রিদ", "বার্সেলোনা", "ঢাকা লিগ", "বিপিএল"
+  ];
 
   for (const feedUrl of feeds) {
     try {
       const feed = await parser.parseURL(feedUrl);
-      const items = feed.items.map((item) => ({
-        title: item.title,
-        link: item.link,
-        pubDate: item.pubDate,
-        source: feed.title || "Unknown source",
-        image:
-          item.enclosure?.url ||
-          (item["media:content"] && item["media:content"]["$"]?.url) ||
-          null,
-        summary: item.contentSnippet || item.content || item.summary || "",
-      }));
 
-      allFeeds.push(items);
+      const items = feed.items.map((item) => {
+        const titleParts = item.title?.split(" - ") || [];
+        const cleanTitle = titleParts[0]?.trim() || item.title;
+        const sourceFromTag = item.source?.["#"]?.trim();
+        const inferredSource = sourceFromTag || titleParts[1]?.trim() || feed.title || "Unknown";
+
+        return {
+          title: cleanTitle,
+          link: item.link,
+          pubDate: item.pubDate,
+          source: inferredSource,
+          image:
+            item.enclosure?.url ||
+            (item["media:content"] && item["media:content"]["$"]?.url) ||
+            null,
+          summary: item.contentSnippet || item.content || item.summary || "",
+        };
+      });
+
+      let filteredItems = items;
+
+      if (categoryKey === "binodon") {
+        filteredItems = items.filter((item) =>
+          binodonKeywords.some((kw) => item.title.includes(kw))
+        );
+      }
+
+      if (categoryKey === "kheladhula") {
+        filteredItems = items.filter((item) =>
+          khelaKeywords.some((kw) => item.title.includes(kw))
+        );
+      }
+
+      allFeeds.push(filteredItems);
     } catch (err) {
       console.error(`⚠️  Failed to fetch feed: ${feedUrl}`, err.message);
     }
   }
 
   if (categoryKey === "topnews") {
-    // Interleave feeds
     const maxLen = Math.max(...allFeeds.map((list) => list.length));
     const interleaved = [];
 
@@ -79,24 +130,56 @@ async function fetchCategoryFeeds(feeds, categoryKey = "") {
 }
 
 async function fetchAndCacheNews() {
-  console.log("🔄  Fetching news from RSS feeds…");
+  console.log("🔄 Fetching news from RSS feeds…");
 
   newsCache.binodon = await fetchCategoryFeeds(rssFeeds.binodon, "binodon");
   newsCache.kheladhula = await fetchCategoryFeeds(rssFeeds.kheladhula, "kheladhula");
   newsCache.topnews = await fetchCategoryFeeds(rssFeeds.topnews, "topnews");
   newsCache.lastUpdated = new Date();
 
-  console.log("✅  News cached at", newsCache.lastUpdated.toLocaleString());
+  console.log("✅ News cached at", newsCache.lastUpdated.toLocaleString());
 }
 
-/* ───────────────────────────── CRON SCHEDULE (6 AM) ───────────────────────── */
 cron.schedule("0 6 * * *", fetchAndCacheNews);
 
-/* ───────────────────────────── INITIAL PRIMING ────────────────────────────── */
 fetchAndCacheNews();
 
-/* ─────────────────────────────── API ENDPOINTS ────────────────────────────── */
-/** GET /news/all – combined list across all categories */
+// New API endpoint to filter news by date
+app.get("/news/bydate", (req, res) => {
+  const { date } = req.query; // expects YYYY-MM-DD
+
+  if (!date) {
+    return res.status(400).json({ error: "Missing date parameter" });
+  }
+
+  // Filter cached news by pubDate matching the requested date
+  const filteredNews = [];
+
+  const requestedDate = new Date(date);
+  if (isNaN(requestedDate)) {
+    return res.status(400).json({ error: "Invalid date format" });
+  }
+
+  // Check for each category
+  for (const category of ["binodon", "kheladhula", "topnews"]) {
+    const filteredItems = newsCache[category].filter((item) => {
+      if (!item.pubDate) return false;
+      const itemDate = new Date(item.pubDate);
+
+      // Compare only date portion (ignore time)
+      return (
+        itemDate.getFullYear() === requestedDate.getFullYear() &&
+        itemDate.getMonth() === requestedDate.getMonth() &&
+        itemDate.getDate() === requestedDate.getDate()
+      );
+    });
+
+    filteredNews.push(...filteredItems.map((item) => ({ ...item, category })));
+  }
+
+  res.json({ news: filteredNews });
+});
+
 app.get("/news/all", (req, res) => {
   const { lastUpdated, ...categories } = newsCache;
 
@@ -108,7 +191,6 @@ app.get("/news/all", (req, res) => {
   res.json({ lastUpdated, news: combinedNews });
 });
 
-/** GET /news/full?url=<ENCODED_URL> – scrape full article text */
 app.get("/news/full", async (req, res) => {
   const { url } = req.query;
   if (!url) {
@@ -140,21 +222,16 @@ app.get("/news/full", async (req, res) => {
     }
 
     if (article.length < 50) {
-      return res
-        .status(404)
-        .json({ error: "Could not extract article content" });
+      return res.status(404).json({ error: "Could not extract article content" });
     }
 
     res.json({ content: article });
   } catch (err) {
-    console.error("❌  Failed to fetch article:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to fetch article", details: err.message });
+    console.error("❌ Failed to fetch article:", err);
+    res.status(500).json({ error: "Failed to fetch article", details: err.message });
   }
 });
 
-/* ─────────────────────────────── START SERVER ─────────────────────────────── */
 app.listen(port, () => {
-  console.log(`🚀  News back‑end running at http://localhost:${port}`);
+  console.log(`🚀 News back-end running at http://localhost:${port}`);
 });

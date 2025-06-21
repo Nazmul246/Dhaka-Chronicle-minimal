@@ -41,7 +41,10 @@ const NewsCard = ({ data }) => {
   };
 
   return (
-    <div className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition duration-300 p-5 flex flex-col justify-between h-full">
+    <div
+      className="bg-white border border-gray-300 rounded-lg shadow-sm hover:shadow-md transition duration-300 p-5 flex flex-col justify-between h-full"
+      data-aos="fade-right"
+    >
       <a
         href={data.link}
         target="_blank"
@@ -54,12 +57,12 @@ const NewsCard = ({ data }) => {
         <p className="text-base text-gray-700 mb-2 line-clamp-3 font-balooDa">
           {data.summary}
         </p>
-        <div className="text-sm text-gray-600 mb-1 font-semibold">
-          Source: <span className="text-gray-800 text-xs">{data.source}</span>
+        <div className="text-[#c0392b] mb-1 font-semibold font-balooDa text-[16px] capitalize">
+          Source: <span className="">{data.source}</span>
         </div>
-        {/* <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500">
           {new Date(data.pubDate).toLocaleString()}
-        </p> */}
+        </p>
       </a>
 
       <button onClick={handleDownloadPDF} className="button-ones mt-4">

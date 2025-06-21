@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import NewsCard from "./NewsCard";
 import { FaArrowCircleRight, FaArrowCircleLeft } from "react-icons/fa";
 
@@ -17,24 +17,32 @@ const CategoryNewsPage = () => {
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const selectedDate = queryParams.get("date"); // in YYYY-MM-DD format
 
   // Fetch news once component mounts or category changes
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:4000/news/all")
+    const fetchUrl = selectedDate
+      ? `http://localhost:4000/news/bydate?date=${selectedDate}`
+      : "http://localhost:4000/news/all";
+
+    fetch(fetchUrl)
       .then((res) => res.json())
       .then((data) => {
+        const rawNews = selectedDate ? data.news : data.news;
         const filteredNews =
-          data.news?.filter((item) => item.category === category) || [];
+          rawNews?.filter((item) => item.category === category) || [];
         setNewsList(filteredNews);
         setLoading(false);
-        setCurrentPage(1); // reset to first page on category change
+        setCurrentPage(1);
       })
       .catch((err) => {
         console.error("Failed to fetch news:", err);
         setLoading(false);
       });
-  }, [category]);
+  }, [category, selectedDate]);
 
   // Pagination calculations
   const totalPages = Math.ceil(newsList.length / ITEMS_PER_PAGE);

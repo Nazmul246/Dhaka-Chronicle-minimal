@@ -4,8 +4,17 @@ import Navbar from "./components/Navbar";
 import CategoryNewsPage from "./components/CategoryNewsPage"; // new page for categories
 import "./index.css";
 import Footer from "./components/Footer";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 function App() {
+  useEffect(() => {
+    AOS.init({
+      duration: 800, // animation duration in ms
+      once: true, // whether animation should happen only once
+    });
+  }, []);
   return (
     <BrowserRouter>
       <Navbar />

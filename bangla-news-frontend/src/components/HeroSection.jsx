@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/custom-datepicker.css";
 
-const HeroSection = () => {
+const HeroSection = ({ selectedDate, setSelectedDate, onFilter }) => {
   const canvasRef = useRef(null);
-  const [date, setDate] = useState(new Date());
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,10 +16,12 @@ const HeroSection = () => {
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
 
-    window.addEventListener("mousemove", (e) => {
+    const mouseMoveHandler = (e) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
-    });
+    };
+
+    window.addEventListener("mousemove", mouseMoveHandler);
 
     class Particle {
       constructor() {
@@ -92,50 +93,67 @@ const HeroSection = () => {
     animate();
 
     return () => {
-      window.removeEventListener("mousemove", () => {});
+      window.removeEventListener("mousemove", mouseMoveHandler);
     };
   }, []);
 
   return (
     <div>
-      <div className="relative w-full h-[450px] overflow-hidden bg-gray-800">
+      <div className="relative w-full h-[450px] md:h-[500px] overflow-hidden bg-gray-800">
         <canvas
           ref={canvasRef}
           className="absolute top-0 left-0 z-0 w-full h-full"
         />
         <div className="absolute top-0 left-0 w-full h-full bg-black opacity-30 z-10"></div>
-        <div className="absolute inset-0 z-10 flex items-center justify-center flex-col">
-          <h1 className="text-4xl text-center pb-10 text-white font-bold">
+
+        {/* Content */}
+        <div
+          className="absolute inset-0 z-10 flex items-center justify-center flex-col px-4"
+          data-aos="zoom-in"
+        >
+          <h1 className="text-2xl sm:text-3xl md:text-4xl text-center pb-6 text-white font-bold leading-snug sm:leading-normal">
             All the News from Bangladesh
             <br />
-            <span className="typing-animations"> One Place, Any Time.</span>
+            <span className="typing-animations">One Place, Any Time.</span>
           </h1>
 
-          {/* Modern Calendar Picker */}
-          <div className="flex items-center justify-between gap-4 bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg w-[90%] max-w-[620px] border border-white/20 flex-wrap md:flex-nowrap">
+          {/* Date Picker UI with Filter button */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white/10 backdrop-blur-md p-4 rounded-xl shadow-lg w-full max-w-[620px] border border-white/20 mx-auto mt-4">
             <div className="flex items-center gap-2 w-full">
               <label htmlFor="date" className="text-white text-xl">
                 📅
               </label>
               <DatePicker
                 id="date"
-                selected={date}
-                onChange={(date) => setDate(date)}
+                selected={
+                  selectedDate instanceof Date && !isNaN(selectedDate)
+                    ? selectedDate
+                    : new Date()
+                }
+                onChange={(date) => setSelectedDate(date)}
                 dateFormat="MMMM d, yyyy"
-                className="bg-white/10 text-white border border-white/30 rounded-md px-3 py-2 w-[400px] text-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+                maxDate={new Date()} // no future dates
+                className="bg-white/10 text-white border border-white/30 rounded-md px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-white/50 lg:w-[400px] sm:w-[600px]"
                 calendarClassName="modern-datepicker"
                 popperPlacement="bottom-start"
               />
             </div>
-            <button className="bg-white text-gray-800 font-medium px-5 py-2 rounded-md hover:bg-gray-200 transition text-sm shadow-md whitespace-nowrap mt-3 md:mt-0">
-              Search News
+
+            {/* Filter News button */}
+            <button
+              onClick={onFilter}
+              className="w-full sm:w-auto bg-white text-gray-800 font-medium px-5 py-2 rounded-md hover:bg-gray-200 transition text-sm shadow-md whitespace-nowrap cursor-pointer"
+              type="button"
+            >
+              Filter News
             </button>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 justify-evenly items-center bg-[#1F2A44] py-4 px-2 text-white text-sm md:text-base">
-        <div className="flex items-center gap-2">
+      {/* Features Section */}
+      <div className="flex flex-wrap gap-4 justify-evenly items-center bg-[#1F2A44] py-4 px-2 text-white text-sm md:text-base mobile-only">
+        <div className="flex items-center gap-2 flex-col lg:flex-row md:flex-row">
           <img
             src="/assets/icons/icons8-newspaper-100.png"
             alt="Newspaper Icon"
@@ -143,18 +161,22 @@ const HeroSection = () => {
             height="30px"
             className="mr-1"
           />
-          <span className="text-[18px]">20+ Top News-portal</span>
+          <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
+            20+ Top News-portal
+          </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-col lg:flex-row md:flex-row">
           <img
             src="/assets/icons/icons8-live-100.png"
             alt="Live Icon"
             width="30px"
             height="30px"
           />
-          <span className="text-[18px]">Live Breaking Updates</span>
+          <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
+            Live Breaking Updates
+          </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-col lg:flex-row md:flex-row">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="30"
@@ -174,16 +196,20 @@ const HeroSection = () => {
             <path d="M17 10c0 -1.989 1.5 -4 4 -4" />
           </svg>
 
-          <span className="text-[18px]">Bangla Language Focused</span>
+          <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
+            Pure Bangla News
+          </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-col lg:flex-row md:flex-row">
           <img
             src="/assets/icons/icons8-repeat-one-100.png"
             alt="Update Icon Icon"
             width="30px"
             height="30px"
           />
-          <span className="text-[18px]">Updated Every Hour</span>
+          <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
+            Updated Every Hour
+          </span>
         </div>
       </div>
     </div>

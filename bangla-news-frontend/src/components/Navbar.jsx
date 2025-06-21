@@ -12,7 +12,7 @@ const Navbar = () => {
     <>
       <nav className="navbar relative z-50 bg-gray-200">
         {/* Desktop + Tablet */}
-        <ul className="hidden md:flex justify-between items-center pt-4 pb-4 px-4 lg:px-10">
+        <ul className="hidden md:flex justify-between items-center pt-4 pb-4 px-4 lg:px-60">
           {/* Logo */}
           <a href="/">
             <li className="font-bold text-xl">
@@ -91,7 +91,7 @@ const Navbar = () => {
           <div className="flex justify-between items-center">
             <a href="/">
               <img
-                src="/assets/Logo.png"
+                src="/assets/img/Logo.png"
                 width="150px"
                 alt="Dhaka Chronicle Vault"
               />

@@ -154,5 +154,27 @@ body {
   background-color: #fff;
 }
 
-
 /* footer */
+
+/* promotion section responsive design */
+
+/* Style disabled dates in react-datepicker */
+
+.react-datepicker__day--disabled {
+  color: #999 !important;
+  cursor: not-allowed !important;
+  opacity: 0.5;
+  pointer-events: none; /* ensures no clicks */
+}
+
+.react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .mobile-only {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
