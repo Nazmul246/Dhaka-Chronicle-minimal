@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "../styles/custom-datepicker.css";
+import { TypeAnimation } from "react-type-animation";
 
 const HeroSection = ({ selectedDate, setSelectedDate, onFilter }) => {
   const canvasRef = useRef(null);
@@ -111,10 +112,23 @@ const HeroSection = ({ selectedDate, setSelectedDate, onFilter }) => {
           className="absolute inset-0 z-10 flex items-center justify-center flex-col px-4"
           data-aos="zoom-in"
         >
-          <h1 className="text-2xl sm:text-3xl md:text-4xl text-center pb-6 text-white font-bold leading-snug sm:leading-normal">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl text-center pb-6 font-bold leading-snug sm:leading-normal text-white">
             All the News from Bangladesh
             <br />
-            <span className="typing-animations">One Place, Any Time.</span>
+            <TypeAnimation
+              sequence={[
+                "One Place, Any Time.",
+                2000,
+                "Real-time Breaking News.",
+                2000,
+                "Your Daily Bangla Digest.",
+                2000,
+              ]}
+              wrapper="span"
+              speed={50}
+              repeat={Infinity}
+              className="text-[#0cbfde] text-xl md:text-2xl font-semibold mt-2 block lg:text-4xl"
+            />
           </h1>
 
           {/* Date Picker UI with Filter button */}
