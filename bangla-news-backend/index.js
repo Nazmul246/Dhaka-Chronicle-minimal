@@ -8,7 +8,6 @@ const cheerio = require("cheerio");
 const app = express();
 const port = 4000;
 
-// Register <source> as a custom field
 const parser = new Parser({
   customFields: {
     item: ["source"],
@@ -17,7 +16,6 @@ const parser = new Parser({
 
 app.use(cors());
 
-// RSS sources (same as before)
 const rssFeeds = {
   binodon: [
     "https://www.prothomalo.com/feed",
@@ -41,10 +39,10 @@ const rssFeeds = {
     "https://www.banglatribune.com/feed/",
     "https://www.bd24live.com/bangla/feed/",
     "https://www.risingbd.com/rss/rss.xml",
+    "https://news.google.com/rss?hl=bn&gl=BD&ceid=BD:bn",
   ],
 };
 
-// Cache (same)
 let newsCache = {
   binodon: [],
   kheladhula: [],
@@ -52,7 +50,6 @@ let newsCache = {
   lastUpdated: null,
 };
 
-// Fetch & Cache logic (same)
 async function fetchCategoryFeeds(feeds, categoryKey = "") {
   const allFeeds = [];
 
@@ -144,37 +141,25 @@ cron.schedule("0 6 * * *", fetchAndCacheNews);
 
 fetchAndCacheNews();
 
-// New API endpoint to filter news by date
 app.get("/news/bydate", (req, res) => {
-  const { date } = req.query; // expects YYYY-MM-DD
-
-  if (!date) {
-    return res.status(400).json({ error: "Missing date parameter" });
-  }
-
-  // Filter cached news by pubDate matching the requested date
-  const filteredNews = [];
+  const { date } = req.query;
+  if (!date) return res.status(400).json({ error: "Missing date parameter" });
 
   const requestedDate = new Date(date);
-  if (isNaN(requestedDate)) {
-    return res.status(400).json({ error: "Invalid date format" });
-  }
+  if (isNaN(requestedDate)) return res.status(400).json({ error: "Invalid date format" });
 
-  // Check for each category
+  const filteredNews = [];
   for (const category of ["binodon", "kheladhula", "topnews"]) {
-    const filteredItems = newsCache[category].filter((item) => {
+    const items = newsCache[category].filter((item) => {
       if (!item.pubDate) return false;
       const itemDate = new Date(item.pubDate);
-
-      // Compare only date portion (ignore time)
       return (
         itemDate.getFullYear() === requestedDate.getFullYear() &&
         itemDate.getMonth() === requestedDate.getMonth() &&
         itemDate.getDate() === requestedDate.getDate()
       );
     });
-
-    filteredNews.push(...filteredItems.map((item) => ({ ...item, category })));
+    filteredNews.push(...items.map((item) => ({ ...item, category })));
   }
 
   res.json({ news: filteredNews });
@@ -182,20 +167,15 @@ app.get("/news/bydate", (req, res) => {
 
 app.get("/news/all", (req, res) => {
   const { lastUpdated, ...categories } = newsCache;
-
-  const combinedNews = Object.entries(categories)
-    .flatMap(([category, items]) =>
-      items.map((item) => ({ ...item, category }))
-    );
-
+  const combinedNews = Object.entries(categories).flatMap(([category, items]) =>
+    items.map((item) => ({ ...item, category }))
+  );
   res.json({ lastUpdated, news: combinedNews });
 });
 
 app.get("/news/full", async (req, res) => {
   const { url } = req.query;
-  if (!url) {
-    return res.status(400).json({ error: "Missing URL" });
-  }
+  if (!url) return res.status(400).json({ error: "Missing URL" });
 
   try {
     const response = await axios.get(url, {
@@ -204,7 +184,7 @@ app.get("/news/full", async (req, res) => {
           "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 " +
           "(KHTML, like Gecko) Chrome/125 Safari/537.36",
       },
-      timeout: 10_000,
+      timeout: 10000,
     });
 
     const $ = cheerio.load(response.data);
