@@ -17,7 +17,7 @@ const Home = () => {
 
   // Fetch all news once on mount
   useEffect(() => {
-    fetch("http://localhost:4000/news/all")
+    fetch("https://dhaka-chronicle-backend-production.up.railway.app/news/all")
       .then((res) => res.json())
       .then((data) => {
         const categorized = {

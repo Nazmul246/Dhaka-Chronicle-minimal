@@ -25,8 +25,8 @@ const CategoryNewsPage = () => {
   useEffect(() => {
     setLoading(true);
     const fetchUrl = selectedDate
-      ? `http://localhost:4000/news/bydate?date=${selectedDate}`
-      : "http://localhost:4000/news/all";
+      ? `https://dhaka-chronicle-backend-production.up.railway.app/news/bydate?date=${selectedDate}`
+      : "https://dhaka-chronicle-backend-production.up.railway.app/news/all";
 
     fetch(fetchUrl)
       .then((res) => res.json())
