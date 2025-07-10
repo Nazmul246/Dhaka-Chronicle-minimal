@@ -24,6 +24,7 @@ const CategoryNewsPage = () => {
   // Fetch news once component mounts or category changes
   useEffect(() => {
     setLoading(true);
+
     const fetchUrl = selectedDate
       ? `https://dhaka-chronicle-backend-production.up.railway.app/news/bydate?date=${selectedDate}`
       : "https://dhaka-chronicle-backend-production.up.railway.app/news/all";
@@ -31,16 +32,41 @@ const CategoryNewsPage = () => {
     fetch(fetchUrl)
       .then((res) => res.json())
       .then((data) => {
-        const rawNews = selectedDate ? data.news : data.news;
-        const filteredNews =
-          rawNews?.filter((item) => item.category === category) || [];
-        setNewsList(filteredNews);
-        setLoading(false);
-        setCurrentPage(1);
+        const rawNews = data.news || [];
+
+        let filteredNews = rawNews.filter(
+          (item) =>
+            item.category &&
+            category &&
+            item.category.toLowerCase() === category.toLowerCase()
+        );
+
+        // Fallback: if no news found for selectedDate, try /news/all instead
+        if (selectedDate && filteredNews.length === 0) {
+          return fetch(
+            "https://dhaka-chronicle-backend-production.up.railway.app/news/all"
+          )
+            .then((res) => res.json())
+            .then((fallbackData) => {
+              const fallbackNews = fallbackData.news || [];
+              const fallbackFiltered = fallbackNews.filter(
+                (item) =>
+                  item.category &&
+                  category &&
+                  item.category.toLowerCase() === category.toLowerCase()
+              );
+              setNewsList(fallbackFiltered);
+            });
+        } else {
+          setNewsList(filteredNews);
+        }
       })
       .catch((err) => {
         console.error("Failed to fetch news:", err);
+      })
+      .finally(() => {
         setLoading(false);
+        setCurrentPage(1);
       });
   }, [category, selectedDate]);
 
