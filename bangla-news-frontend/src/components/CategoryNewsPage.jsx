@@ -17,6 +17,7 @@ const CategoryNewsPage = () => {
   const [newsList, setNewsList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const selectedDate = queryParams.get("date"); // in YYYY-MM-DD format
@@ -24,49 +25,72 @@ const CategoryNewsPage = () => {
   // Fetch news once component mounts or category changes
   useEffect(() => {
     setLoading(true);
+    setCurrentPage(1);
+
+    // First, try to use the new category-specific endpoint
+    const categoryUrl = `https://dhaka-chronicle-backend-production.up.railway.app/news/category/${category}`;
 
     const fetchUrl = selectedDate
       ? `https://dhaka-chronicle-backend-production.up.railway.app/news/bydate?date=${selectedDate}`
-      : "https://dhaka-chronicle-backend-production.up.railway.app/news/all";
+      : categoryUrl;
+
+    console.log(`🔍 Fetching from: ${fetchUrl}`);
 
     fetch(fetchUrl)
       .then((res) => res.json())
       .then((data) => {
-        const rawNews = data.news || [];
+        console.log(`📥 Received data for ${category}:`, {
+          total: data.total,
+          returned: data.returned || data.news?.length,
+        });
 
-        let filteredNews = rawNews.filter(
-          (item) =>
-            item.category &&
-            category &&
-            item.category.toLowerCase() === category.toLowerCase()
+        let filteredNews = [];
+
+        if (selectedDate) {
+          // When filtering by date, we need to filter by category
+          const rawNews = data.news || [];
+          filteredNews = rawNews.filter(
+            (item) =>
+              item.category &&
+              category &&
+              item.category.toLowerCase() === category.toLowerCase()
+          );
+        } else {
+          // When using category endpoint, news is already filtered
+          filteredNews = data.news || [];
+        }
+
+        console.log(
+          `📊 Final filtered count for ${category}:`,
+          filteredNews.length
         );
 
         // Fallback: if no news found for selectedDate, try /news/all instead
         if (selectedDate && filteredNews.length === 0) {
-          return fetch(
-            "https://dhaka-chronicle-backend-production.up.railway.app/news/all"
-          )
+          console.log("🔄 No news for selected date, trying fallback...");
+          return fetch(categoryUrl)
             .then((res) => res.json())
             .then((fallbackData) => {
               const fallbackNews = fallbackData.news || [];
-              const fallbackFiltered = fallbackNews.filter(
-                (item) =>
-                  item.category &&
-                  category &&
-                  item.category.toLowerCase() === category.toLowerCase()
+              console.log(
+                `📥 Fallback data for ${category}:`,
+                fallbackNews.length
               );
-              setNewsList(fallbackFiltered);
+              setNewsList(fallbackNews);
+              setTotalItems(fallbackNews.length);
             });
         } else {
           setNewsList(filteredNews);
+          setTotalItems(data.total || filteredNews.length);
         }
       })
       .catch((err) => {
         console.error("Failed to fetch news:", err);
+        setNewsList([]);
+        setTotalItems(0);
       })
       .finally(() => {
         setLoading(false);
-        setCurrentPage(1);
       });
   }, [category, selectedDate]);
 
@@ -77,50 +101,163 @@ const CategoryNewsPage = () => {
 
   const displayName = categoryDisplayNames[category] || category;
 
+  // Handle page change
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    // Scroll to top when changing pages
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxPagesToShow = 5;
+    const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
+  };
+
   return (
     <div className="container mx-auto px-4 py-6">
       {/* Skewed Heading */}
       <div className="relative flex items-center mb-6">
         <div className="relative z-10 px-6 py-2 bg-[#1f2a44] text-white text-xl font-semibold transform -skew-x-6 shadow-md">
-          <span className="inline-block transform skew-x-6">{displayName}</span>
+          <span className="inline-block transform skew-x-6">
+            {displayName}
+            {!loading && ` (${newsList.length} news)`}
+            {selectedDate && ` - ${selectedDate}`}
+          </span>
         </div>
         <div className="absolute left-0 bottom-0 w-full h-1 bg-[#1f2a44]"></div>
       </div>
 
+      {/* Debug info - remove in production */}
+      {process.env.NODE_ENV === "development" && !loading && (
+        <div className="mb-4 p-4 bg-gray-100 rounded">
+          <h3 className="font-bold">Debug Info:</h3>
+          <p>Category: {category}</p>
+          <p>Selected Date: {selectedDate || "All dates"}</p>
+          <p>Total Items: {totalItems}</p>
+          <p>Filtered Items: {newsList.length}</p>
+          <p>
+            Current Page: {currentPage} of {totalPages}
+          </p>
+          <p>
+            Showing: {startIndex + 1}-
+            {Math.min(startIndex + ITEMS_PER_PAGE, newsList.length)}
+          </p>
+        </div>
+      )}
+
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex justify-center items-center py-12">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#1f2a44]"></div>
+          <span className="ml-4 text-lg">Loading news...</span>
+        </div>
       ) : visibleItems.length === 0 ? (
-        <p>No news found in this category.</p>
+        <div className="text-center py-12">
+          <div className="text-6xl mb-4">📰</div>
+          <h3 className="text-xl font-semibold mb-2">No news found</h3>
+          <p className="text-gray-600 mb-4">
+            {selectedDate
+              ? `No news found in this category for ${selectedDate}`
+              : `No news found in this category`}
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="px-6 py-2 bg-[#1f2a44] text-white rounded-full hover:bg-blue-600 transition-colors"
+          >
+            Back to Home
+          </button>
+        </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             {visibleItems.map((item, idx) => (
-              <NewsCard key={idx} data={item} />
+              <NewsCard
+                key={`${category}-${currentPage}-${idx}-${item.link}`}
+                data={item}
+              />
             ))}
           </div>
 
-          {/* Pagination controls */}
-          <div className="flex justify-center items-center mt-8 space-x-4">
-            <button
-              onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 cursor-pointer hover:text-[#248afe] flex items-center gap-2"
-            >
-              <FaArrowCircleLeft />
-              Prev
-            </button>
+          {/* Enhanced Pagination controls */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center mt-8 space-x-2 flex-wrap">
+              {/* Previous button */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-400 flex items-center gap-2 transition-colors"
+              >
+                <FaArrowCircleLeft />
+                Prev
+              </button>
 
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
+              {/* First page */}
+              {getPageNumbers()[0] > 1 && (
+                <>
+                  <button
+                    onClick={() => handlePageChange(1)}
+                    className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+                  >
+                    1
+                  </button>
+                  {getPageNumbers()[0] > 2 && <span className="px-2">...</span>}
+                </>
+              )}
 
-            <button
-              onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 cursor-pointer hover:text-[#248afe] flex items-center gap-2"
-            >
-              Next <FaArrowCircleRight />
-            </button>
+              {/* Page numbers */}
+              {getPageNumbers().map((pageNum) => (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  className={`px-3 py-2 rounded transition-colors ${
+                    currentPage === pageNum
+                      ? "bg-[#1f2a44] text-white"
+                      : "bg-gray-200 hover:bg-gray-300"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              ))}
+
+              {/* Last page */}
+              {getPageNumbers()[getPageNumbers().length - 1] < totalPages && (
+                <>
+                  {getPageNumbers()[getPageNumbers().length - 1] <
+                    totalPages - 1 && <span className="px-2">...</span>}
+                  <button
+                    onClick={() => handlePageChange(totalPages)}
+                    className="px-3 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors"
+                  >
+                    {totalPages}
+                  </button>
+                </>
+              )}
+
+              {/* Next button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-400 flex items-center gap-2 transition-colors"
+              >
+                Next <FaArrowCircleRight />
+              </button>
+            </div>
+          )}
+
+          {/* Results summary */}
+          <div className="text-center mt-4 text-gray-600">
+            Showing {startIndex + 1}-
+            {Math.min(startIndex + ITEMS_PER_PAGE, newsList.length)} of{" "}
+            {newsList.length} news articles
+            {totalPages > 1 && ` (Page ${currentPage} of ${totalPages})`}
           </div>
         </>
       )}
