@@ -8,7 +8,7 @@ const NewsCard = ({ data }) => {
 
     try {
       const resp = await fetch(
-        `https://dhaka-chronicle-backend-production.up.railway.app/news/full?url=${encodeURIComponent(data.link)}`
+        `http://localhost:4000/news/full?url=${encodeURIComponent(data.link)}`
       );
       if (!resp.ok) throw new Error(`Server sent ${resp.status}`);
 

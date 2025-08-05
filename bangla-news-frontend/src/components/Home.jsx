@@ -11,6 +11,11 @@ const Home = () => {
     binodon: false,
     kheladhula: false,
     topnews: false,
+    rajniti: false,
+    orthoniti: false,
+    projukti: false,
+    aantorjatik: false,
+    swasthya: false,
   });
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
@@ -21,11 +26,9 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
 
-    fetch("https://dhaka-chronicle-backend-production.up.railway.app/news/all")
+    fetch("http://localhost:4000/news/all")
       .then((res) => res.json())
       .then((data) => {
-        console.log("📥 Received data:", data.stats); // Debug log
-
         const categorized = {
           binodon:
             data.news?.filter((item) => item.category === "binodon") || [],
@@ -33,13 +36,17 @@ const Home = () => {
             data.news?.filter((item) => item.category === "kheladhula") || [],
           topnews:
             data.news?.filter((item) => item.category === "topnews") || [],
+          rajniti:
+            data.news?.filter((item) => item.category === "rajniti") || [],
+          orthoniti:
+            data.news?.filter((item) => item.category === "orthoniti") || [],
+          projukti:
+            data.news?.filter((item) => item.category === "projukti") || [],
+          aantorjatik:
+            data.news?.filter((item) => item.category === "aantorjatik") || [],
+          swasthya:
+            data.news?.filter((item) => item.category === "swasthya") || [],
         };
-
-        console.log("📊 Categorized counts:", {
-          binodon: categorized.binodon.length,
-          kheladhula: categorized.kheladhula.length,
-          topnews: categorized.topnews.length,
-        });
 
         setNewsData(categorized);
         setFilteredNews(categorized); // initially show all news
@@ -76,12 +83,6 @@ const Home = () => {
       filtered[category] = newsData[category].filter((item) =>
         item.pubDate ? isSameDay(item.pubDate, selectedDate) : false
       );
-    });
-
-    console.log("🔍 Filtered results:", {
-      binodon: filtered.binodon.length,
-      kheladhula: filtered.kheladhula.length,
-      topnews: filtered.topnews.length,
     });
 
     setFilteredNews(filtered);
@@ -162,26 +163,15 @@ const Home = () => {
         onFilter={handleFilterNews}
       />
       <div className="container mx-auto px-4">
-        {/* Debug information - remove in production */}
-        {process.env.NODE_ENV === "development" && (
-          <div className="mb-4 p-4 bg-gray-100 rounded">
-            <h3 className="font-bold">Debug Info:</h3>
-            <p>Total News Cached: {stats.total || 0}</p>
-            <p>
-              Binodon: {stats.binodon || 0}, Kheladhula: {stats.kheladhula || 0}
-              , Topnews: {stats.topnews || 0}
-            </p>
-            <p>
-              Currently Showing: Binodon: {filteredNews.binodon?.length || 0},
-              Kheladhula: {filteredNews.kheladhula?.length || 0}, Topnews:{" "}
-              {filteredNews.topnews?.length || 0}
-            </p>
-          </div>
-        )}
-
+        {/* Render all categories */}
         {renderCategory("topnews", "📰 Trending News")}
+        {renderCategory("rajniti", "🏛️ Politics")}
+        {renderCategory("orthoniti", "💰 Economy")}
         {renderCategory("binodon", "🎬 Entertainments")}
         {renderCategory("kheladhula", "🏆 Sports")}
+        {renderCategory("projukti", "💻 Technology")}
+        {renderCategory("aantorjatik", "🌍 International")}
+        {renderCategory("swasthya", "🏥 Health")}
       </div>
     </div>
   );

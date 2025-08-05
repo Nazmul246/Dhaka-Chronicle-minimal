@@ -9,6 +9,11 @@ const categoryDisplayNames = {
   topnews: "📰 Trending News",
   binodon: "🎬 Entertainments",
   kheladhula: "🏆 Sports",
+  rajniti: "🏛️ Politics",
+  orthoniti: "💰 Economy",
+  projukti: "💻 Technology",
+  aantorjatik: "🌍 International",
+  swasthya: "🏥 Health",
 };
 
 const CategoryNewsPage = () => {
@@ -28,22 +33,15 @@ const CategoryNewsPage = () => {
     setCurrentPage(1);
 
     // First, try to use the new category-specific endpoint
-    const categoryUrl = `https://dhaka-chronicle-backend-production.up.railway.app/news/category/${category}`;
+    const categoryUrl = `http://localhost:4000/news/category/${category}`;
 
     const fetchUrl = selectedDate
-      ? `https://dhaka-chronicle-backend-production.up.railway.app/news/bydate?date=${selectedDate}`
+      ? `http://localhost:4000/news/bydate?date=${selectedDate}`
       : categoryUrl;
-
-    console.log(`🔍 Fetching from: ${fetchUrl}`);
 
     fetch(fetchUrl)
       .then((res) => res.json())
       .then((data) => {
-        console.log(`📥 Received data for ${category}:`, {
-          total: data.total,
-          returned: data.returned || data.news?.length,
-        });
-
         let filteredNews = [];
 
         if (selectedDate) {
@@ -60,22 +58,12 @@ const CategoryNewsPage = () => {
           filteredNews = data.news || [];
         }
 
-        console.log(
-          `📊 Final filtered count for ${category}:`,
-          filteredNews.length
-        );
-
         // Fallback: if no news found for selectedDate, try /news/all instead
         if (selectedDate && filteredNews.length === 0) {
-          console.log("🔄 No news for selected date, trying fallback...");
           return fetch(categoryUrl)
             .then((res) => res.json())
             .then((fallbackData) => {
               const fallbackNews = fallbackData.news || [];
-              console.log(
-                `📥 Fallback data for ${category}:`,
-                fallbackNews.length
-              );
               setNewsList(fallbackNews);
               setTotalItems(fallbackNews.length);
             });
@@ -135,24 +123,6 @@ const CategoryNewsPage = () => {
         </div>
         <div className="absolute left-0 bottom-0 w-full h-1 bg-[#1f2a44]"></div>
       </div>
-
-      {/* Debug info - remove in production */}
-      {process.env.NODE_ENV === "development" && !loading && (
-        <div className="mb-4 p-4 bg-gray-100 rounded">
-          <h3 className="font-bold">Debug Info:</h3>
-          <p>Category: {category}</p>
-          <p>Selected Date: {selectedDate || "All dates"}</p>
-          <p>Total Items: {totalItems}</p>
-          <p>Filtered Items: {newsList.length}</p>
-          <p>
-            Current Page: {currentPage} of {totalPages}
-          </p>
-          <p>
-            Showing: {startIndex + 1}-
-            {Math.min(startIndex + ITEMS_PER_PAGE, newsList.length)}
-          </p>
-        </div>
-      )}
 
       {loading ? (
         <div className="flex justify-center items-center py-12">

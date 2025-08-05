@@ -15,7 +15,7 @@ const SearchNews = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `https://dhaka-chronicle-backend-production.up.railway.app/news/search?q=${encodeURIComponent(
+          `http://localhost:4000/news/search?q=${encodeURIComponent(
             query
           )}`
         );
