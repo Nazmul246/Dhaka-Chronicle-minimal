@@ -3,6 +3,29 @@ import { jsPDF } from "jspdf";
 import "../fonts/kalpurush-normal"; // ✅ Imports and registers the font
 
 const NewsCard = ({ data }) => {
+  // Track click when user clicks on news link
+  const handleNewsClick = async (e) => {
+    try {
+      // Send click tracking data to backend
+      await fetch("http://localhost:4000/news/track-click", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          newsId: data.link, // Using link as unique identifier
+          title: data.title,
+          category: data.category,
+          source: data.source,
+          clickedAt: new Date().toISOString(),
+        }),
+      });
+    } catch (error) {
+      console.error("Failed to track click:", error);
+      // Don't prevent navigation even if tracking fails
+    }
+  };
+
   const handleDownloadPDF = async (e) => {
     e.preventDefault();
 
@@ -50,6 +73,7 @@ const NewsCard = ({ data }) => {
         target="_blank"
         rel="noopener noreferrer"
         className="flex-1"
+        onClick={handleNewsClick}
       >
         <h3 className="text-xl font-bold text-gray-900 mb-3 leading-snug line-clamp-2 font-notoSans">
           {data.title}

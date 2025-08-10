@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NewsCard from "./NewsCard";
 import HeroSection from "./HeroSection";
+import TrendingMarquee from "./TrendingMarquee"; // Import the new component
 
 const Home = () => {
   const [newsData, setNewsData] = useState({}); // all news categorized
@@ -162,6 +163,10 @@ const Home = () => {
         setSelectedDate={setSelectedDate}
         onFilter={handleFilterNews}
       />
+
+      {/* Add Trending Marquee right after HeroSection */}
+      <TrendingMarquee />
+
       <div className="container mx-auto px-4">
         {/* Render all categories */}
         {renderCategory("topnews", "📰 Trending News")}
