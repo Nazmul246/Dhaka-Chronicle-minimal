@@ -26,40 +26,137 @@ const NewsCard = ({ data }) => {
     }
   };
 
+  // const handleDownloadPDF = async (e) => {
+  //   e.preventDefault();
+
+  //   try {
+  //     const resp = await fetch(
+  //       `http://localhost:4000/news/full?url=${encodeURIComponent(data.link)}`
+  //     );
+  //     if (!resp.ok) throw new Error(`Server sent ${resp.status}`);
+
+  //     const { content } = await resp.json();
+  //     if (!content) throw new Error("No article content");
+
+  // ✅ Create PDF and use Bangla font
+  //     const pdf = new jsPDF({
+  //       orientation: "p",
+  //       unit: "pt",
+  //       format: "a4",
+  //     });
+
+  //     pdf.setFont("kalpurush", "normal");
+  //     pdf.setFontSize(14);
+
+  //     const pageWidth = pdf.internal.pageSize.getWidth() - 80;
+  //     const body = pdf.splitTextToSize(content, pageWidth);
+
+  //     const title = pdf.splitTextToSize(data.title, pageWidth);
+
+  //     pdf.text(title, 40, 60);
+  //     pdf.text(body, 40, 100);
+
+  //     pdf.save(`${data.title.slice(0, 30)}.pdf`);
+  //   } catch (err) {
+  //     console.error("❌ Could not generate Bangla PDF:", err.message);
+  //   }
+  // };
   const handleDownloadPDF = async (e) => {
     e.preventDefault();
 
     try {
+      console.log("Fetching content for URL:", data.link);
+
       const resp = await fetch(
         `http://localhost:4000/news/full?url=${encodeURIComponent(data.link)}`
       );
-      if (!resp.ok) throw new Error(`Server sent ${resp.status}`);
 
-      const { content } = await resp.json();
-      if (!content) throw new Error("No article content");
+      console.log("Response status:", resp.status);
 
-      // ✅ Create PDF and use Bangla font
-      const pdf = new jsPDF({
-        orientation: "p",
-        unit: "pt",
-        format: "a4",
-      });
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        console.error("Server error:", errorText);
+        throw new Error(`Server sent ${resp.status}: ${errorText}`);
+      }
 
-      pdf.setFont("kalpurush", "normal");
-      pdf.setFontSize(14);
+      const responseData = await resp.json();
+      console.log("Response data:", responseData);
 
-      const pageWidth = pdf.internal.pageSize.getWidth() - 80;
-      const body = pdf.splitTextToSize(content, pageWidth);
+      const { content, title, warning } = responseData;
+      if (!content || content.length < 50)
+        throw new Error("No sufficient article content found");
 
-      // ✅ Handle Bangla title correctly
-      const title = pdf.splitTextToSize(data.title, pageWidth);
+      if (warning) {
+        console.warn("PDF generation warning:", warning);
+      }
 
-      pdf.text(title, 40, 60);
-      pdf.text(body, 40, 100);
+      console.log("Creating PDF with content length:", content.length);
 
-      pdf.save(`${data.title.slice(0, 30)}.pdf`);
+      // Create a clean PDF with just title and content
+      const printWindow = window.open("", "_blank");
+
+      if (!printWindow) {
+        alert("Please allow popups for this site to download PDF");
+        return;
+      }
+
+      printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>${title || data.title}</title>
+          <style>
+            body { 
+              font-family: 'Noto Sans Bengali', 'SolaimanLipi', 'Kalpurush', Arial, sans-serif; 
+              line-height: 1.8; 
+              margin: 60px;
+              font-size: 16px;
+              color: #333;
+            }
+            h1 { 
+              font-size: 24px; 
+              margin-bottom: 30px;
+              color: #1a1a1a;
+              text-align: center;
+              border-bottom: 2px solid #ddd;
+              padding-bottom: 15px;
+            }
+            .content { 
+              text-align: justify; 
+              text-indent: 30px;
+            }
+            .source {
+              margin-top: 40px;
+              font-size: 14px;
+              color: #666;
+              border-top: 1px solid #eee;
+              padding-top: 15px;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>${title || data.title}</h1>
+          <div class="content">${content}</div>
+          <div class="source">
+            <strong>Source:</strong> ${data.source}<br>
+            <strong>Date:</strong> ${new Date(
+              data.pubDate
+            ).toLocaleDateString()}
+          </div>
+        </body>
+      </html>
+    `);
+      printWindow.document.close();
+
+      // Wait for content to load, then print
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 1000);
     } catch (err) {
-      console.error("❌ Could not generate Bangla PDF:", err.message);
+      console.error("❌ Full error details:", err);
+      alert(`Failed to download PDF: ${err.message}`);
     }
   };
 

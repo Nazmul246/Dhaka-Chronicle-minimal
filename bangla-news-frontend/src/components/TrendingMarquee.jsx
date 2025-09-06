@@ -73,7 +73,7 @@ const TrendingMarquee = () => {
                   >
                     <span className="font-semibold">{item.title}</span>
                     <span className="text-red-200 ml-2 text-sm">
-                      ({item.clickCount} clicks)
+                      ({item.clickCount} views)
                     </span>
                   </span>
                 ))}
