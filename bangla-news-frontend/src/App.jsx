@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
+import NotFoundPage from "./components/NotFoundPage";
 
 function App() {
   useEffect(() => {
@@ -22,7 +23,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/category/:category" element={<CategoryNewsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
         <Route path="/search" element={<SearchNews />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </BrowserRouter>
