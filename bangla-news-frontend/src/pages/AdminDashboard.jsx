@@ -226,7 +226,7 @@ const AdminDashboard = () => {
                   setActiveTab(item.id);
                   setSidebarOpen(false);
                 }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all ${
+                className={`cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all ${
                   activeTab === item.id
                     ? "bg-blue-600 text-white shadow-lg"
                     : "text-slate-300 hover:bg-slate-700/50"
@@ -245,14 +245,14 @@ const AdminDashboard = () => {
             </p>
             <button
               onClick={() => window.open("/", "_blank")}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-slate-300 hover:bg-slate-700/50 transition-all"
+              className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-slate-300 hover:bg-slate-700/50 transition-all"
             >
               <FiEye size={20} />
               <span className="text-sm font-medium">View Site</span>
             </button>
             <button
               onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-900/20 transition-all"
+              className="cursor-pointer w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-900/20 transition-all"
             >
               <FiLogOut size={20} />
               <span className="text-sm font-medium">Logout</span>
@@ -344,7 +344,7 @@ const AdminDashboard = () => {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                    className="cursor-pointer px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
                   >
                     {saving ? "Adding..." : "Add RSS Feed"}
                   </button>
@@ -376,7 +376,7 @@ const AdminDashboard = () => {
                             <button
                               onClick={() => handleRemoveFeed(cat.key, feedUrl)}
                               disabled={saving}
-                              className="ml-4 px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition disabled:opacity-50"
+                              className="cursor-pointer ml-4 px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition disabled:opacity-50"
                             >
                               Remove
                             </button>
@@ -567,7 +567,7 @@ const AdminDashboard = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                  className="cursor-pointer px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -582,25 +582,735 @@ const AdminDashboard = () => {
                 Edit About Us Page
               </h2>
               <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    About Us Content
-                  </label>
-                  <textarea
-                    value={siteTexts.aboutUs || ""}
-                    onChange={(e) =>
-                      setSiteTexts({ ...siteTexts, aboutUs: e.target.value })
-                    }
-                    rows="6"
-                    placeholder="Write about your news portal..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                  />
+                {/* Header Section */}
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Header Section
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Page Title
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutPageTitle || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutPageTitle: e.target.value,
+                          })
+                        }
+                        placeholder="About Dhaka Chronicle"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Page Subtitle
+                      </label>
+                      <textarea
+                        value={siteTexts.aboutPageSubtitle || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutPageSubtitle: e.target.value,
+                          })
+                        }
+                        rows="3"
+                        placeholder="Your trusted source for bilingual news coverage..."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mission Section */}
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Mission Section
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Mission Title
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutMissionTitle || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutMissionTitle: e.target.value,
+                          })
+                        }
+                        placeholder="Our Mission"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Mission Description
+                      </label>
+                      <textarea
+                        value={siteTexts.aboutMissionDesc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutMissionDesc: e.target.value,
+                          })
+                        }
+                        rows="4"
+                        placeholder="Dhaka Chronicle is dedicated to delivering accurate, unbiased..."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Stats Section */}
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Statistics Section
+                  </h3>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {/* Stat 1 */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Stat 1 - Number
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat1Number || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat1Number: e.target.value,
+                          })
+                        }
+                        placeholder="1M+"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat1Label || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat1Label: e.target.value,
+                          })
+                        }
+                        placeholder="Monthly Readers"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Stat 2 */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Stat 2 - Number
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat2Number || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat2Number: e.target.value,
+                          })
+                        }
+                        placeholder="50+"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat2Label || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat2Label: e.target.value,
+                          })
+                        }
+                        placeholder="Journalists"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Stat 3 */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Stat 3 - Number
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat3Number || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat3Number: e.target.value,
+                          })
+                        }
+                        placeholder="24/7"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat3Label || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat3Label: e.target.value,
+                          })
+                        }
+                        placeholder="News Updates"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Stat 4 */}
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">
+                        Stat 4 - Number
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat4Number || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat4Number: e.target.value,
+                          })
+                        }
+                        placeholder="2"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <input
+                        type="text"
+                        value={siteTexts.aboutStat4Label || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutStat4Label: e.target.value,
+                          })
+                        }
+                        placeholder="Languages"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Features Section */}
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Features Section
+                  </h3>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Section Title
+                    </label>
+                    <input
+                      type="text"
+                      value={siteTexts.aboutFeaturesTitle || ""}
+                      onChange={(e) =>
+                        setSiteTexts({
+                          ...siteTexts,
+                          aboutFeaturesTitle: e.target.value,
+                        })
+                      }
+                      placeholder="What Sets Us Apart"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Feature 1 */}
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <h4 className="font-medium text-gray-800">Feature 1</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icon Name
+                        </label>
+                        <select
+                          value={siteTexts.aboutFeature1Icon || "Newspaper"}
+                          onChange={(e) =>
+                            setSiteTexts({
+                              ...siteTexts,
+                              aboutFeature1Icon: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        >
+                          <option value="Newspaper">Newspaper</option>
+                          <option value="Globe">Globe</option>
+                          <option value="Download">Download</option>
+                          <option value="Users">Users</option>
+                          <option value="Award">Award</option>
+                          <option value="TrendingUp">TrendingUp</option>
+                          <option value="Target">Target</option>
+                          <option value="Heart">Heart</option>
+                          <option value="Zap">Zap</option>
+                          <option value="Shield">Shield</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutFeature1Title || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutFeature1Title: e.target.value,
+                          })
+                        }
+                        placeholder="Feature Title"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <textarea
+                        value={siteTexts.aboutFeature1Desc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutFeature1Desc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Feature Description"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Feature 2 */}
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <h4 className="font-medium text-gray-800">Feature 2</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icon Name
+                        </label>
+                        <select
+                          value={siteTexts.aboutFeature2Icon || "Globe"}
+                          onChange={(e) =>
+                            setSiteTexts({
+                              ...siteTexts,
+                              aboutFeature2Icon: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        >
+                          <option value="Newspaper">Newspaper</option>
+                          <option value="Globe">Globe</option>
+                          <option value="Download">Download</option>
+                          <option value="Users">Users</option>
+                          <option value="Award">Award</option>
+                          <option value="TrendingUp">TrendingUp</option>
+                          <option value="Target">Target</option>
+                          <option value="Heart">Heart</option>
+                          <option value="Zap">Zap</option>
+                          <option value="Shield">Shield</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutFeature2Title || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutFeature2Title: e.target.value,
+                          })
+                        }
+                        placeholder="Feature Title"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <textarea
+                        value={siteTexts.aboutFeature2Desc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutFeature2Desc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Feature Description"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Feature 3 */}
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <h4 className="font-medium text-gray-800">Feature 3</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icon Name
+                        </label>
+                        <select
+                          value={siteTexts.aboutFeature3Icon || "Download"}
+                          onChange={(e) =>
+                            setSiteTexts({
+                              ...siteTexts,
+                              aboutFeature3Icon: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        >
+                          <option value="Newspaper">Newspaper</option>
+                          <option value="Globe">Globe</option>
+                          <option value="Download">Download</option>
+                          <option value="Users">Users</option>
+                          <option value="Award">Award</option>
+                          <option value="TrendingUp">TrendingUp</option>
+                          <option value="Target">Target</option>
+                          <option value="Heart">Heart</option>
+                          <option value="Zap">Zap</option>
+                          <option value="Shield">Shield</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutFeature3Title || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutFeature3Title: e.target.value,
+                          })
+                        }
+                        placeholder="Feature Title"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <textarea
+                        value={siteTexts.aboutFeature3Desc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutFeature3Desc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Feature Description"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Core Values Section */}
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Core Values Section
+                  </h3>
+
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Section Title
+                    </label>
+                    <input
+                      type="text"
+                      value={siteTexts.aboutValuesTitle || ""}
+                      onChange={(e) =>
+                        setSiteTexts({
+                          ...siteTexts,
+                          aboutValuesTitle: e.target.value,
+                        })
+                      }
+                      placeholder="Our Core Values"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+
+                  <div className="space-y-6">
+                    {/* Value 1 */}
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <h4 className="font-medium text-gray-800">Value 1</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icon Name
+                        </label>
+                        <select
+                          value={siteTexts.aboutValue1Icon || "Award"}
+                          onChange={(e) =>
+                            setSiteTexts({
+                              ...siteTexts,
+                              aboutValue1Icon: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        >
+                          <option value="Newspaper">Newspaper</option>
+                          <option value="Globe">Globe</option>
+                          <option value="Download">Download</option>
+                          <option value="Users">Users</option>
+                          <option value="Award">Award</option>
+                          <option value="TrendingUp">TrendingUp</option>
+                          <option value="Target">Target</option>
+                          <option value="Heart">Heart</option>
+                          <option value="Zap">Zap</option>
+                          <option value="Shield">Shield</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutValue1Title || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue1Title: e.target.value,
+                          })
+                        }
+                        placeholder="Value Title"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <textarea
+                        value={siteTexts.aboutValue1Desc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue1Desc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Value Description"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Value 2 */}
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <h4 className="font-medium text-gray-800">Value 2</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icon Name
+                        </label>
+                        <select
+                          value={siteTexts.aboutValue2Icon || "Users"}
+                          onChange={(e) =>
+                            setSiteTexts({
+                              ...siteTexts,
+                              aboutValue2Icon: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        >
+                          <option value="Newspaper">Newspaper</option>
+                          <option value="Globe">Globe</option>
+                          <option value="Download">Download</option>
+                          <option value="Users">Users</option>
+                          <option value="Award">Award</option>
+                          <option value="TrendingUp">TrendingUp</option>
+                          <option value="Target">Target</option>
+                          <option value="Heart">Heart</option>
+                          <option value="Zap">Zap</option>
+                          <option value="Shield">Shield</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutValue2Title || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue2Title: e.target.value,
+                          })
+                        }
+                        placeholder="Value Title"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <textarea
+                        value={siteTexts.aboutValue2Desc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue2Desc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Value Description"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Value 3 */}
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <h4 className="font-medium text-gray-800">Value 3</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icon Name
+                        </label>
+                        <select
+                          value={siteTexts.aboutValue3Icon || "TrendingUp"}
+                          onChange={(e) =>
+                            setSiteTexts({
+                              ...siteTexts,
+                              aboutValue3Icon: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        >
+                          <option value="Newspaper">Newspaper</option>
+                          <option value="Globe">Globe</option>
+                          <option value="Download">Download</option>
+                          <option value="Users">Users</option>
+                          <option value="Award">Award</option>
+                          <option value="TrendingUp">TrendingUp</option>
+                          <option value="Target">Target</option>
+                          <option value="Heart">Heart</option>
+                          <option value="Zap">Zap</option>
+                          <option value="Shield">Shield</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutValue3Title || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue3Title: e.target.value,
+                          })
+                        }
+                        placeholder="Value Title"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <textarea
+                        value={siteTexts.aboutValue3Desc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue3Desc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Value Description"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    {/* Value 4 */}
+                    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
+                      <h4 className="font-medium text-gray-800">Value 4</h4>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Icon Name
+                        </label>
+                        <select
+                          value={siteTexts.aboutValue4Icon || "Globe"}
+                          onChange={(e) =>
+                            setSiteTexts({
+                              ...siteTexts,
+                              aboutValue4Icon: e.target.value,
+                            })
+                          }
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        >
+                          <option value="Newspaper">Newspaper</option>
+                          <option value="Globe">Globe</option>
+                          <option value="Download">Download</option>
+                          <option value="Users">Users</option>
+                          <option value="Award">Award</option>
+                          <option value="TrendingUp">TrendingUp</option>
+                          <option value="Target">Target</option>
+                          <option value="Heart">Heart</option>
+                          <option value="Zap">Zap</option>
+                          <option value="Shield">Shield</option>
+                        </select>
+                      </div>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutValue4Title || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue4Title: e.target.value,
+                          })
+                        }
+                        placeholder="Value Title"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                      <textarea
+                        value={siteTexts.aboutValue4Desc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutValue4Desc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Value Description"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Section */}
+                <div className="border-b pb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Call-to-Action Section
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        CTA Title
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutCtaTitle || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutCtaTitle: e.target.value,
+                          })
+                        }
+                        placeholder="Join Our Growing Community"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        CTA Description
+                      </label>
+                      <textarea
+                        value={siteTexts.aboutCtaDesc || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutCtaDesc: e.target.value,
+                          })
+                        }
+                        rows="2"
+                        placeholder="Stay informed with Dhaka Chronicle's comprehensive coverage..."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Button Text
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.aboutCtaButton || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            aboutCtaButton: e.target.value,
+                          })
+                        }
+                        placeholder="Explore Latest News"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50 cursor-pointer"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -660,18 +1370,35 @@ const AdminDashboard = () => {
               <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Footer Copyright Text
+                    Footer Title
                   </label>
                   <input
                     type="text"
-                    value={siteTexts.footerCopyright || ""}
+                    value={siteTexts.footerTitle || ""}
                     onChange={(e) =>
                       setSiteTexts({
                         ...siteTexts,
-                        footerCopyright: e.target.value,
+                        footerTitle: e.target.value,
                       })
                     }
-                    placeholder="e.g., © 2025 Dhaka Chronicle Vault. All rights reserved."
+                    placeholder="Dhaka Chronicle Vault"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Footer Description
+                  </label>
+                  <textarea
+                    value={siteTexts.footerDescription || ""}
+                    onChange={(e) =>
+                      setSiteTexts({
+                        ...siteTexts,
+                        footerDescription: e.target.value,
+                      })
+                    }
+                    rows="3"
+                    placeholder="Write Your Footer Description Here..."
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                   />
                 </div>
@@ -679,7 +1406,7 @@ const AdminDashboard = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                  className="cursor-pointer px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
