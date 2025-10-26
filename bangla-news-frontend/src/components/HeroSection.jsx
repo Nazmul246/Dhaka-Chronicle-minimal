@@ -4,7 +4,12 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../styles/custom-datepicker.css";
 import { TypeAnimation } from "react-type-animation";
 
-const HeroSection = ({ selectedDate, setSelectedDate, onFilter }) => {
+const HeroSection = ({
+  selectedDate,
+  setSelectedDate,
+  onFilter,
+  siteTexts,
+}) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -113,7 +118,7 @@ const HeroSection = ({ selectedDate, setSelectedDate, onFilter }) => {
           data-aos="zoom-in"
         >
           <h1 className="text-2xl sm:text-3xl md:text-4xl text-center pb-6 font-bold leading-snug sm:leading-normal text-white">
-            All the News from Bangladesh
+            {siteTexts?.homepageHeading || "All the News from Bangladesh"}
             <br />
             <TypeAnimation
               sequence={[
@@ -146,7 +151,7 @@ const HeroSection = ({ selectedDate, setSelectedDate, onFilter }) => {
                 }
                 onChange={(date) => setSelectedDate(date)}
                 dateFormat="MMMM d, yyyy"
-                maxDate={new Date()} // no future dates
+                maxDate={new Date()}
                 className="bg-white/10 text-white border border-white/30 rounded-md px-3 py-2 w-full text-sm focus:outline-none focus:ring-2 focus:ring-white/50 lg:w-[400px] sm:w-[600px]"
                 calendarClassName="modern-datepicker"
                 popperPlacement="bottom-start"

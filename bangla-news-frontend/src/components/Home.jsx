@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NewsCard from "./NewsCard";
 import HeroSection from "./HeroSection";
-import TrendingMarquee from "./TrendingMarquee"; // Import the new component
+import TrendingMarquee from "./TrendingMarquee";
 
 const Home = () => {
-  const [newsData, setNewsData] = useState({}); // all news categorized
-  const [filteredNews, setFilteredNews] = useState({}); // filtered news by date
+  const [newsData, setNewsData] = useState({});
+  const [filteredNews, setFilteredNews] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showAll, setShowAll] = useState({
     binodon: false,
@@ -20,6 +20,8 @@ const Home = () => {
   });
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
+  const [categoryNames, setCategoryNames] = useState({});
+  const [siteTexts, setSiteTexts] = useState({});
 
   const navigate = useNavigate();
 
@@ -27,7 +29,6 @@ const Home = () => {
   const diversifyNewsSources = (newsArray, maxItemsToShow = 6) => {
     if (newsArray.length === 0) return [];
 
-    // Define English news sources
     const englishSources = [
       "The Daily Star",
       "The Business Standard",
@@ -35,7 +36,6 @@ const Home = () => {
       "Dhaka Tribune",
     ];
 
-    // Separate English and Bangla news
     const englishNews = newsArray.filter((item) =>
       englishSources.some(
         (source) =>
@@ -57,7 +57,6 @@ const Home = () => {
         )
     );
 
-    // Group Bangla news by source
     const banglaBySource = {};
     banglaNews.forEach((item) => {
       const source = item.source || "Unknown";
@@ -67,32 +66,28 @@ const Home = () => {
       banglaBySource[source].push(item);
     });
 
-    // Sort sources by number of articles (to get variety)
     const sortedBanglaSources = Object.keys(banglaBySource).sort(
       (a, b) => banglaBySource[b].length - banglaBySource[a].length
     );
 
-    // Select diverse sources with limit per source
     const diverseNews = [];
     const maxPerSource = Math.max(
       1,
       Math.floor((maxItemsToShow - 1) / Math.min(5, sortedBanglaSources.length))
     );
 
-    // Add Bangla news from different sources
     let sourcesUsed = 0;
     for (const source of sortedBanglaSources) {
-      if (sourcesUsed >= 5) break; // Limit to 5 different Bangla sources
+      if (sourcesUsed >= 5) break;
 
       const sourceNews = banglaBySource[source]
-        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate)) // Sort by date
-        .slice(0, maxPerSource); // Take limited items per source
+        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+        .slice(0, maxPerSource);
 
       diverseNews.push(...sourceNews);
       sourcesUsed++;
     }
 
-    // Add one English news if available
     if (englishNews.length > 0) {
       const latestEnglish = englishNews.sort(
         (a, b) => new Date(b.pubDate) - new Date(a.pubDate)
@@ -100,11 +95,25 @@ const Home = () => {
       diverseNews.push(latestEnglish);
     }
 
-    // Sort final array by publication date and return limited items
     return diverseNews
       .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
       .slice(0, maxItemsToShow);
   };
+
+  // Fetch site configuration (category names, etc.)
+  useEffect(() => {
+    fetch("http://localhost:4000/news/site-config")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.texts) {
+          setCategoryNames(data.texts.categoryNames || {});
+          setSiteTexts(data.texts);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch site config:", err);
+      });
+  }, []);
 
   // Fetch all news once on mount
   useEffect(() => {
@@ -133,7 +142,7 @@ const Home = () => {
         };
 
         setNewsData(categorized);
-        setFilteredNews(categorized); // initially show all news
+        setFilteredNews(categorized);
         setStats(data.stats || {});
       })
       .catch((err) => {
@@ -144,14 +153,12 @@ const Home = () => {
       });
   }, []);
 
-  // Filter news by selectedDate when Filter button is clicked
   const handleFilterNews = () => {
     if (!selectedDate) {
-      setFilteredNews(newsData); // if no date selected, reset
+      setFilteredNews(newsData);
       return;
     }
 
-    // Helper function to check if news item date matches selectedDate (ignore time)
     const isSameDay = (date1, date2) => {
       const d1 = new Date(date1);
       const d2 = new Date(date2);
@@ -179,10 +186,12 @@ const Home = () => {
     }));
   };
 
-  const renderCategory = (categoryKey, displayName) => {
+  const renderCategory = (categoryKey, defaultDisplayName) => {
     const items = filteredNews[categoryKey] || [];
 
-    // Apply source diversity for homepage display
+    // Use dynamic category name from admin config, fallback to default
+    const displayName = categoryNames[categoryKey] || defaultDisplayName;
+
     const diverseItems = diversifyNewsSources(items, 6);
     const visibleItems = showAll[categoryKey] ? items : diverseItems;
     const totalInCategory = items.length;
@@ -236,16 +245,6 @@ const Home = () => {
                 </button>
               </div>
             )}
-
-            {/* Show source diversity info when not showing all */}
-            {/* {!showAll[categoryKey] && diverseItems.length > 0 && (
-              <div className="text-center mt-4 text-sm text-gray-500">
-                Showing diverse sources:{" "}
-                {[...new Set(diverseItems.map((item) => item.source))].join(
-                  ", "
-                )}
-              </div>
-            )} */}
           </>
         )}
       </section>
@@ -258,13 +257,12 @@ const Home = () => {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         onFilter={handleFilterNews}
+        siteTexts={siteTexts}
       />
 
-      {/* Add Trending Marquee right after HeroSection */}
       <TrendingMarquee />
 
       <div className="container mx-auto px-4">
-        {/* Render all categories */}
         {renderCategory("topnews", "🔰 Trending News")}
         {renderCategory("rajniti", "🏛️ Politics")}
         {renderCategory("orthoniti", "💰 Economy")}

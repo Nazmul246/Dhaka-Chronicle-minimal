@@ -1,34 +1,58 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
-import CategoryNewsPage from "./components/CategoryNewsPage"; // new page for categories
+import CategoryNewsPage from "./components/CategoryNewsPage";
 import SearchNews from "./components/SearchNews";
-import "./index.css";
+import NotFoundPage from "./components/NotFoundPage";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 import Footer from "./components/Footer";
+import "./index.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
-import NotFoundPage from "./components/NotFoundPage";
+import { useLocation } from "react-router-dom";
 
 function App() {
   useEffect(() => {
     AOS.init({
-      duration: 800, // animation duration in ms
-      once: true, // whether animation should happen only once
+      duration: 800,
+      once: true,
     });
   }, []);
+
   return (
     <BrowserRouter>
-      <Navbar />
+      <AppContent />
+    </BrowserRouter>
+  );
+}
+
+function AppContent() {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith("/admin");
+
+  return (
+    <>
+      {/* Show Navbar and Footer only for non-admin pages */}
+      {!isAdminPage && <Navbar />}
+
       <Routes>
+        {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/category/:category" element={<CategoryNewsPage />} />
-        <Route path="*" element={<NotFoundPage />} />
         <Route path="/search" element={<SearchNews />} />
+
+        {/* Admin Routes */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+        {/* 404 Page */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-      <Footer />
-    </BrowserRouter>
+
+      {!isAdminPage && <Footer />}
+    </>
   );
 }
 
