@@ -75,7 +75,7 @@ const Navbar = () => {
 
             <button
               onClick={toggleMenu}
-              className="text-2xl focus:outline-none"
+              className="cursor-pointer text-2xl focus:outline-none"
               aria-label="Toggle Menu"
             >
               {isOpen ? <HiX /> : <HiOutlineMenuAlt3 />}
