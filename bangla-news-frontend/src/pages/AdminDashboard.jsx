@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  FiRss,
+  FiHome,
+  FiInfo,
+  FiTag,
+  FiMail,
+  FiLayout,
+  FiLogOut,
+  FiEye,
+  FiMenu,
+  FiX,
+} from "react-icons/fi";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("rss");
@@ -8,6 +20,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Form states
   const [selectedCategory, setSelectedCategory] = useState("binodon");
@@ -24,6 +37,15 @@ const AdminDashboard = () => {
     { key: "projukti", label: "Projukti (Technology)" },
     { key: "aantorjatik", label: "Aantorjatik (International)" },
     { key: "swasthya", label: "Swasthya (Health)" },
+  ];
+
+  const menuItems = [
+    { id: "rss", label: "RSS Feeds", icon: FiRss },
+    { id: "homepage", label: "Homepage Contents", icon: FiHome },
+    { id: "about", label: "About Us", icon: FiInfo },
+    { id: "categories", label: "Category Rename", icon: FiTag },
+    { id: "footer", label: "Footer", icon: FiLayout },
+    { id: "contact", label: "Contact Us", icon: FiMail },
   ];
 
   // Check if admin is logged in
@@ -165,218 +187,434 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside
+        className={`${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } fixed lg:translate-x-0 lg:static inset-y-0 left-0 z-50 w-80 bg-gradient-to-b from-slate-800 to-slate-900 text-white transition-transform duration-300 ease-in-out `}
+      >
+        {/* Logo */}
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-xl">
+              DC
+            </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Admin Dashboard
-              </h1>
-              <p className="text-sm text-gray-600">
-                Welcome, {localStorage.getItem("adminUsername")}
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <button
-                onClick={() => navigate("/")}
-                className="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
-              >
-                View Site
-              </button>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition"
-              >
-                Logout
-              </button>
+              <h1 className="text-lg font-bold">Dhaka Chronicle</h1>
+              <p className="text-xs text-slate-400">Admin Panel</p>
             </div>
           </div>
-        </div>
-      </header>
-
-      {/* Message Alert */}
-      {message.text && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-          <div
-            className={`p-4 rounded-lg ${
-              message.type === "success"
-                ? "bg-green-50 text-green-800 border border-green-200"
-                : "bg-red-50 text-red-800 border border-red-200"
-            }`}
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="lg:hidden text-white"
           >
-            {message.text}
+            <FiX size={24} />
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="p-4">
+          <div className="mb-4">
+            <p className="text-xs text-slate-400 uppercase font-semibold px-4 mb-2">
+              Management
+            </p>
+            {menuItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-all ${
+                  activeTab === item.id
+                    ? "bg-blue-600 text-white shadow-lg"
+                    : "text-slate-300 hover:bg-slate-700/50"
+                }`}
+              >
+                <item.icon size={20} />
+                <span className="text-sm font-medium">{item.label}</span>
+              </button>
+            ))}
           </div>
-        </div>
-      )}
 
-      {/* Tabs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8">
+          {/* Account Section */}
+          <div className="mt-8">
+            <p className="text-xs text-slate-400 uppercase font-semibold px-4 mb-2">
+              Account
+            </p>
             <button
-              onClick={() => setActiveTab("rss")}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition ${
-                activeTab === "rss"
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              }`}
+              onClick={() => window.open("/", "_blank")}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-1 text-slate-300 hover:bg-slate-700/50 transition-all"
             >
-              RSS Feeds Management
+              <FiEye size={20} />
+              <span className="text-sm font-medium">View Site</span>
             </button>
             <button
-              onClick={() => setActiveTab("texts")}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition ${
-                activeTab === "texts"
-                  ? "border-blue-500 text-blue-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-900/20 transition-all"
+            >
+              <FiLogOut size={20} />
+              <span className="text-sm font-medium">Logout</span>
+            </button>
+          </div>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Header */}
+        <header className="bg-white shadow-sm border-b z-10">
+          <div className="flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="lg:hidden text-gray-600"
+              >
+                <FiMenu size={24} />
+              </button>
+              <div>
+                <h2 className="text-xl font-bold text-gray-900">
+                  Dhaka Chronicle Vault
+                </h2>
+                <p className="text-sm text-gray-600">
+                  Welcome, {localStorage.getItem("adminUsername")}
+                </p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Message Alert */}
+        {message.text && (
+          <div className="px-6 pt-4">
+            <div
+              className={`p-4 rounded-lg ${
+                message.type === "success"
+                  ? "bg-green-50 text-green-800 border border-green-200"
+                  : "bg-red-50 text-red-800 border border-red-200"
               }`}
             >
-              Site Texts
-            </button>
-          </nav>
-        </div>
-      </div>
+              {message.text}
+            </div>
+          </div>
+        )}
 
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === "rss" && (
-          <div className="space-y-6">
-            {/* Add RSS Feed Form */}
+        {/* Content Area */}
+        <main className="flex-1 overflow-y-auto p-6">
+          {/* RSS Feeds Tab */}
+          {activeTab === "rss" && (
+            <div className="space-y-6">
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Add New RSS Feed
+                </h2>
+                <form onSubmit={handleAddFeed} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Category
+                      </label>
+                      <select
+                        value={selectedCategory}
+                        onChange={(e) => setSelectedCategory(e.target.value)}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      >
+                        {categories.map((cat) => (
+                          <option key={cat.key} value={cat.key}>
+                            {cat.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        RSS Feed URL
+                      </label>
+                      <input
+                        type="url"
+                        value={newFeedUrl}
+                        onChange={(e) => setNewFeedUrl(e.target.value)}
+                        placeholder="https://example.com/feed/rss.xml"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                  >
+                    {saving ? "Adding..." : "Add RSS Feed"}
+                  </button>
+                </form>
+              </div>
+
+              <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Current RSS Feeds
+                </h2>
+                <div className="space-y-6">
+                  {categories.map((cat) => (
+                    <div
+                      key={cat.key}
+                      className="border-b pb-4 last:border-b-0"
+                    >
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">
+                        {cat.label} ({rssFeeds[cat.key]?.length || 0} feeds)
+                      </h3>
+                      <div className="space-y-2">
+                        {rssFeeds[cat.key]?.map((feedUrl, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between bg-gray-50 p-3 rounded-lg"
+                          >
+                            <span className="text-sm text-gray-700 break-all flex-1">
+                              {feedUrl}
+                            </span>
+                            <button
+                              onClick={() => handleRemoveFeed(cat.key, feedUrl)}
+                              disabled={saving}
+                              className="ml-4 px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition disabled:opacity-50"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))}
+                        {(!rssFeeds[cat.key] ||
+                          rssFeeds[cat.key].length === 0) && (
+                          <p className="text-sm text-gray-500 italic">
+                            No RSS feeds added yet
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Homepage Contents Tab */}
+          {activeTab === "homepage" && (
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Add New RSS Feed
+                Edit Homepage Contents
               </h2>
-              <form onSubmit={handleAddFeed} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Category
-                    </label>
-                    <select
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                    >
-                      {categories.map((cat) => (
-                        <option key={cat.key} value={cat.key}>
-                          {cat.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      RSS Feed URL
-                    </label>
-                    <input
-                      type="url"
-                      value={newFeedUrl}
-                      onChange={(e) => setNewFeedUrl(e.target.value)}
-                      placeholder="https://example.com/feed/rss.xml"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                      required
-                    />
+              <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
+                {/* Main Heading */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Homepage Main Heading
+                  </label>
+                  <input
+                    type="text"
+                    value={siteTexts.homepageHeading || ""}
+                    onChange={(e) =>
+                      setSiteTexts({
+                        ...siteTexts,
+                        homepageHeading: e.target.value,
+                      })
+                    }
+                    placeholder="e.g., All the News from Bangladesh"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+
+                {/* Animation Texts Section */}
+                <div className="border-t pt-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">
+                    Animated Typing Texts
+                  </h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        1. Animation Text 1
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.animationText1 || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            animationText1: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., One Place, Any Time."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        2. Animation Text 2
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.animationText2 || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            animationText2: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., Real-time Breaking News."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        3. Animation Text 3
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.animationText3 || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            animationText3: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., Your Daily Bangla Digest."
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
                   </div>
                 </div>
+
+                {/* Featured Section */}
+                <div className="border-t pt-4">
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">
+                    Featured Section (Below Hero)
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        1. Feature 1
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.feature1 || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            feature1: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., 20+ Top News-portal"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        2. Feature 2
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.feature2 || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            feature2: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., Live Breaking Updates"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        3. Feature 3
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.feature3 || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            feature3: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., Pure Bangla News"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        4. Feature 4
+                      </label>
+                      <input
+                        type="text"
+                        value={siteTexts.feature4 || ""}
+                        onChange={(e) =>
+                          setSiteTexts({
+                            ...siteTexts,
+                            feature4: e.target.value,
+                          })
+                        }
+                        placeholder="e.g., Updated Every Hour"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+
                 <button
                   type="submit"
                   disabled={saving}
                   className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
                 >
-                  {saving ? "Adding..." : "Add RSS Feed"}
+                  {saving ? "Saving..." : "Save Changes"}
                 </button>
               </form>
             </div>
+          )}
 
-            {/* RSS Feeds List */}
+          {/* About Us Tab */}
+          {activeTab === "about" && (
             <div className="bg-white rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                Current RSS Feeds
+                Edit About Us Page
               </h2>
-              <div className="space-y-6">
-                {categories.map((cat) => (
-                  <div key={cat.key} className="border-b pb-4 last:border-b-0">
-                    <h3 className="text-lg font-medium text-gray-900 mb-3">
-                      {cat.label} ({rssFeeds[cat.key]?.length || 0} feeds)
-                    </h3>
-                    <div className="space-y-2">
-                      {rssFeeds[cat.key]?.map((feedUrl, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center justify-between bg-gray-50 p-3 rounded-lg"
-                        >
-                          <span className="text-sm text-gray-700 break-all flex-1">
-                            {feedUrl}
-                          </span>
-                          <button
-                            onClick={() => handleRemoveFeed(cat.key, feedUrl)}
-                            disabled={saving}
-                            className="ml-4 px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm rounded transition disabled:opacity-50"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                      {(!rssFeeds[cat.key] ||
-                        rssFeeds[cat.key].length === 0) && (
-                        <p className="text-sm text-gray-500 italic">
-                          No RSS feeds added yet
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    About Us Content
+                  </label>
+                  <textarea
+                    value={siteTexts.aboutUs || ""}
+                    onChange={(e) =>
+                      setSiteTexts({ ...siteTexts, aboutUs: e.target.value })
+                    }
+                    rows="6"
+                    placeholder="Write about your news portal..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </form>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === "texts" && (
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Edit Site Texts
-            </h2>
-            <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
-              {/* Homepage Heading */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Homepage Heading
-                </label>
-                <input
-                  type="text"
-                  value={siteTexts.homepageHeading || ""}
-                  onChange={(e) =>
-                    setSiteTexts({
-                      ...siteTexts,
-                      homepageHeading: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
-              </div>
-
-              {/* About Us */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  About Us Text
-                </label>
-                <textarea
-                  value={siteTexts.aboutUs || ""}
-                  onChange={(e) =>
-                    setSiteTexts({ ...siteTexts, aboutUs: e.target.value })
-                  }
-                  rows="4"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
-              </div>
-
-              {/* Category Names */}
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3">
-                  Category Display Names
-                </h3>
+          {/* Category Rename Tab */}
+          {activeTab === "categories" && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Rename Categories
+              </h2>
+              <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {categories.map((cat) => (
                     <div key={cat.key}>
@@ -395,24 +633,142 @@ const AdminDashboard = () => {
                             },
                           })
                         }
+                        placeholder={`e.g., 🎬 Entertainment`}
                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                       />
                     </div>
                   ))}
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
-              >
-                {saving ? "Saving..." : "Save Changes"}
-              </button>
-            </form>
-          </div>
-        )}
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Footer Tab */}
+          {activeTab === "footer" && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Edit Footer Content
+              </h2>
+              <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Footer Copyright Text
+                  </label>
+                  <input
+                    type="text"
+                    value={siteTexts.footerCopyright || ""}
+                    onChange={(e) =>
+                      setSiteTexts({
+                        ...siteTexts,
+                        footerCopyright: e.target.value,
+                      })
+                    }
+                    placeholder="e.g., © 2025 Dhaka Chronicle Vault. All rights reserved."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* Contact Us Tab */}
+          {activeTab === "contact" && (
+            <div className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Edit Contact Information
+              </h2>
+              <form onSubmit={handleUpdateSiteTexts} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contact Email
+                    </label>
+                    <input
+                      type="email"
+                      value={siteTexts.contactEmail || ""}
+                      onChange={(e) =>
+                        setSiteTexts({
+                          ...siteTexts,
+                          contactEmail: e.target.value,
+                        })
+                      }
+                      placeholder="contact@dhakachronicle.com"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Contact Phone
+                    </label>
+                    <input
+                      type="tel"
+                      value={siteTexts.contactPhone || ""}
+                      onChange={(e) =>
+                        setSiteTexts({
+                          ...siteTexts,
+                          contactPhone: e.target.value,
+                        })
+                      }
+                      placeholder="+880 1234 567890"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Contact Address
+                  </label>
+                  <textarea
+                    value={siteTexts.contactAddress || ""}
+                    onChange={(e) =>
+                      setSiteTexts({
+                        ...siteTexts,
+                        contactAddress: e.target.value,
+                      })
+                    }
+                    rows="3"
+                    placeholder="Dhaka, Bangladesh"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled:opacity-50"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+              </form>
+            </div>
+          )}
+        </main>
       </div>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
     </div>
   );
 };

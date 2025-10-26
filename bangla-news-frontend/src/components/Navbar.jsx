@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { SlCalender } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const date = new Date();
@@ -139,20 +140,20 @@ const Navbar = () => {
         >
           <ul className="flex flex-col lg:flex-row justify-center gap-6 text-gray-800 text-lg px-4">
             <li>
-              <a
-                href="/"
+              <Link
+                to="/"
                 className="hover:text-indigo-600 transition-all block py-1"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a
-                href="#"
+              <Link
+                to="/about"
                 className="hover:text-indigo-600 transition-all block py-1"
               >
                 About Us
-              </a>
+              </Link>
             </li>
             <li>
               <a

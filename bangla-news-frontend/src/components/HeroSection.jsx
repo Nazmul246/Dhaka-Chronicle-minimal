@@ -121,12 +121,13 @@ const HeroSection = ({
             {siteTexts?.homepageHeading || "All the News from Bangladesh"}
             <br />
             <TypeAnimation
+              key={`${siteTexts?.animationText1}-${siteTexts?.animationText2}-${siteTexts?.animationText3}`} // 👈 forces re-render when text changes
               sequence={[
-                "One Place, Any Time.",
+                siteTexts?.animationText1 || "One Place, Any Time.",
                 2000,
-                "Real-time Breaking News.",
+                siteTexts?.animationText2 || "Real-time Breaking News.",
                 2000,
-                "Your Daily Bangla Digest.",
+                siteTexts?.animationText3 || "Your Daily Bangla Digest.",
                 2000,
               ]}
               wrapper="span"
@@ -181,7 +182,7 @@ const HeroSection = ({
             className="mr-1"
           />
           <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
-            20+ Top News-portal
+            {siteTexts?.feature1 || "20+ Top News-portal"}
           </span>
         </div>
         <div className="flex items-center gap-2 flex-col lg:flex-row md:flex-row">
@@ -192,7 +193,7 @@ const HeroSection = ({
             height="30px"
           />
           <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
-            Live Breaking Updates
+            {siteTexts?.feature2 || "Live News Updates"}
           </span>
         </div>
         <div className="flex items-center gap-2 flex-col lg:flex-row md:flex-row">
@@ -216,7 +217,7 @@ const HeroSection = ({
           </svg>
 
           <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
-            Pure Bangla News
+            {siteTexts?.feature3 || "Pure Bangla News"}
           </span>
         </div>
         <div className="flex items-center gap-2 flex-col lg:flex-row md:flex-row">
@@ -227,7 +228,7 @@ const HeroSection = ({
             height="30px"
           />
           <span className="text-[14px] lg:text-[16px] md:text-[15px] text-center">
-            Updated Every Hour
+            {siteTexts?.feature4 || "Updated Every Hour"}
           </span>
         </div>
       </div>

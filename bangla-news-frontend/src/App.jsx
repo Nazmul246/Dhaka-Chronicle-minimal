@@ -12,6 +12,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import AboutUs from "./components/AboutUs";
 
 function App() {
   useEffect(() => {
@@ -42,6 +43,9 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/category/:category" element={<CategoryNewsPage />} />
         <Route path="/search" element={<SearchNews />} />
+
+        {/* About */}
+        <Route path="/about" element={<AboutUs />} />
 
         {/* Admin Routes */}
         <Route path="/admin/login" element={<AdminLogin />} />
