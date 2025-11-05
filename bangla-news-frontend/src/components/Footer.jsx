@@ -19,7 +19,7 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-[#1f2a44] text-white mt-12" data-aos="zoom-in">
+    <footer className="bg-[#1f2a44] text-white mt-12">
       <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-20">
         {/* Site Title / Description */}
         <div>
@@ -112,8 +112,19 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="border-t border-gray-600 text-center py-4 text-sm text-gray-400">
-        © {new Date().getFullYear()} Dhaka Chronicle. All rights reserved.
+      <div className="border-t border-gray-600 text-center py-4 text-sm text-white">
+        © {new Date().getFullYear()} Dhaka Chronicle. All rights reserved. ✦
+        Designed & Developed by{" "}
+        <span className="text-gray-300 font-medium">
+          <a
+            href="https://nazmulportfolio.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 font-semibold hover:text-blue-300 transition-colors duration-200"
+          >
+            Nazmul Islam Nayem
+          </a>
+        </span>
       </div>
     </footer>
   );
