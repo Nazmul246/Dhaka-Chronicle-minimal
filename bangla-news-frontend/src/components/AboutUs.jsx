@@ -29,7 +29,7 @@ export default function AboutUs() {
 
   const [siteTexts, setSiteTexts] = useState({});
   useEffect(() => {
-    fetch("http://localhost:4000/news/site-config")
+    fetch("https://api.streambriefing.com/news/site-config")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.texts) {
@@ -130,7 +130,7 @@ export default function AboutUs() {
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
           {siteTexts?.aboutPageTitle || "About Dhaka Chronicle"}
         </h1>
-        <div className="w-24 h-1 text-[#0cbfde] mx-auto mb-6 bg-[#0cbfde]"></div>
+        <div className="w-24 h-1 text-[#763e3e] mx-auto mb-6 bg-[#763e3e]"></div>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
           {siteTexts?.aboutPageSubtitle ||
             "Your trusted source for bilingual news coverage, bringing you the latest stories from Bangladesh and around the world in both Bangla and English."}
@@ -138,7 +138,7 @@ export default function AboutUs() {
       </div>
 
       {/* Mission Statement */}
-      <div className="mb-16 p-8 border-l-4 border-[#0cbfde]">
+      <div className="mb-16 p-8 border-l-4 border-[#763e3e]">
         <h2 className="text-2xl font-bold mb-4">
           {siteTexts?.aboutMissionTitle || "Our Mission"}
         </h2>
@@ -155,7 +155,7 @@ export default function AboutUs() {
             key={index}
             className="text-center p-6 border border-gray-200 rounded-lg hover:shadow-lg transition-shadow"
           >
-            <div className="text-3xl md:text-4xl font-bold text-[#0cbfde] mb-2">
+            <div className="text-3xl md:text-4xl font-bold text-[#763e3e] mb-2">
               {stat.number}
             </div>
             <div className="text-gray-600">{stat.label}</div>
@@ -174,7 +174,7 @@ export default function AboutUs() {
               key={index}
               className="text-center p-6 rounded-lg border border-gray-200 hover:shadow-lg transition-shadow"
             >
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-[#0cbfde] rounded-full mb-4">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-[#763e3e] rounded-full mb-4">
                 {getIcon(feature.icon, "w-8 h-8")}
               </div>
               <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
@@ -193,7 +193,7 @@ export default function AboutUs() {
           {coreValues.map((value, index) => (
             <div key={index} className="p-6 border border-gray-200 rounded-lg">
               <div className="flex items-start gap-4">
-                <div className="text-[#0cbfde] flex-shrink-0 mt-1">
+                <div className="text-[#763e3e] flex-shrink-0 mt-1">
                   {getIcon(value.icon, "w-6 h-6")}
                 </div>
                 <div>
@@ -207,7 +207,7 @@ export default function AboutUs() {
       </div>
 
       {/* CTA Section */}
-      <div className="text-center p-8 border-2 border-[#0cbfde] rounded-lg">
+      <div className="text-center p-8 border-2 border-[#763e3e] rounded-lg">
         <h2 className="text-2xl md:text-3xl font-bold mb-4">
           {siteTexts?.aboutCtaTitle || "Join Our Growing Community"}
         </h2>
@@ -215,7 +215,7 @@ export default function AboutUs() {
           {siteTexts?.aboutCtaDesc ||
             "Stay informed with Dhaka Chronicle's comprehensive coverage. Read news in your preferred language and download articles for later."}
         </p>
-        <button className="cursor-pointer px-8 py-3 bg-[#0cbfde] text-white rounded-lg hover:bg-[#0999b2] transition-colors font-semibold">
+        <button className="cursor-pointer px-8 py-3 bg-[#763e3e] text-white rounded-lg hover:bg-[#0999b2] transition-colors font-semibold">
           {siteTexts?.aboutCtaButton || "Explore Latest News"}
         </button>
       </div>

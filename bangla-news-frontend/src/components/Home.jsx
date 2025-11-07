@@ -102,7 +102,7 @@ const Home = () => {
 
   // Fetch site configuration (category names, etc.)
   useEffect(() => {
-    fetch("http://localhost:4000/news/site-config")
+    fetch("https://api.streambriefing.com/news/site-config")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.texts) {
@@ -119,7 +119,7 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
 
-    fetch("http://localhost:4000/news/all")
+    fetch("https://api.streambriefing.com/news/all")
       .then((res) => res.json())
       .then((data) => {
         const categorized = {
@@ -236,9 +236,9 @@ const Home = () => {
                       }`
                     )
                   }
-                  className="relative inline-flex items-center px-6 py-2 mt-4 text-blue-600 border border-blue-600 rounded-full group overflow-hidden transition-all duration-300 ease-out hover:bg-blue-600 hover:text-white cursor-pointer"
+                  className="relative inline-flex items-center px-6 py-2 mt-4 text-[#763e3e] border border-[#763e3e] rounded-full group overflow-hidden transition-all duration-300 ease-out hover:bg-[#763e3e] hover:text-white cursor-pointer"
                 >
-                  <span className="absolute left-0 w-full h-0 transition-all duration-300 ease-out transform -translate-y-full bg-blue-600 group-hover:h-full group-hover:translate-y-0"></span>
+                  <span className="absolute left-0 w-full h-0 transition-all duration-300 ease-out transform -translate-y-full bg-[#763e3e] group-hover:h-full group-hover:translate-y-0"></span>
                   <span className="relative z-10 font-semibold tracking-wide">
                     See All {totalInCategory} News
                   </span>

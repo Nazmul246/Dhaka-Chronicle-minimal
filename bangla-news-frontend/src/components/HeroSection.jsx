@@ -133,7 +133,7 @@ const HeroSection = ({
               wrapper="span"
               speed={50}
               repeat={Infinity}
-              className="text-[#0cbfde] text-xl md:text-2xl font-semibold mt-2 block lg:text-4xl"
+              className="text-[#763e3e] text-xl md:text-2xl font-semibold mt-2 block lg:text-4xl animated-type-text"
             />
           </h1>
 

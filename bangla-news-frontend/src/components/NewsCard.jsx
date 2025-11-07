@@ -7,7 +7,7 @@ const NewsCard = ({ data }) => {
   const handleNewsClick = async (e) => {
     try {
       // Send click tracking data to backend
-      await fetch("http://localhost:4000/news/track-click", {
+      await fetch("https://api.streambriefing.com/news/track-click", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +33,7 @@ const NewsCard = ({ data }) => {
       console.log("Fetching content for URL:", data.link);
 
       const resp = await fetch(
-        `http://localhost:4000/news/full?url=${encodeURIComponent(data.link)}`
+        `https://api.streambriefing.com/news/full?url=${encodeURIComponent(data.link)}`
       );
 
       console.log("Response status:", resp.status);

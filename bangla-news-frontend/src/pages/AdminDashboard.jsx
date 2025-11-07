@@ -65,8 +65,8 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [feedsRes, textsRes] = await Promise.all([
-        fetch("http://localhost:4000/admin/rss-feeds"),
-        fetch("http://localhost:4000/admin/site-texts"),
+        fetch("https://api.streambriefing.com/admin/rss-feeds"),
+        fetch("https://api.streambriefing.com/admin/site-texts"),
       ]);
 
       const feedsData = await feedsRes.json();
@@ -94,7 +94,7 @@ const AdminDashboard = () => {
     setSaving(true);
     try {
       const response = await fetch(
-        "http://localhost:4000/admin/rss-feeds/add",
+        "https://api.streambriefing.com/admin/rss-feeds/add",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -126,7 +126,7 @@ const AdminDashboard = () => {
     setSaving(true);
     try {
       const response = await fetch(
-        "http://localhost:4000/admin/rss-feeds/remove",
+        "https://api.streambriefing.com/admin/rss-feeds/remove",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -153,7 +153,7 @@ const AdminDashboard = () => {
     setSaving(true);
 
     try {
-      const response = await fetch("http://localhost:4000/admin/site-texts", {
+      const response = await fetch("https://api.streambriefing.com/admin/site-texts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ siteTexts }),
@@ -275,7 +275,7 @@ const AdminDashboard = () => {
               </button>
               <div>
                 <h2 className="text-xl font-bold text-gray-900">
-                  Dhaka Chronicle Vault
+                  Stream Briefing
                 </h2>
                 <p className="text-sm text-gray-600">
                   Welcome, {localStorage.getItem("adminUsername")}
@@ -1381,7 +1381,7 @@ const AdminDashboard = () => {
                         footerTitle: e.target.value,
                       })
                     }
-                    placeholder="Dhaka Chronicle Vault"
+                    placeholder="Stream Briefing"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
                   />
                 </div>

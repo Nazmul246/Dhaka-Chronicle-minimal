@@ -15,7 +15,7 @@ const SearchNews = () => {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:4000/news/search?q=${encodeURIComponent(
+          `https://api.streambriefing.com/news/search?q=${encodeURIComponent(
             query
           )}`
         );

@@ -7,7 +7,9 @@ const TrendingMarquee = () => {
   useEffect(() => {
     const fetchTrendingNews = async () => {
       try {
-        const response = await fetch("http://localhost:4000/news/trending");
+        const response = await fetch(
+          "https://api.streambriefing.com/news/trending"
+        );
         const data = await response.json();
         setTrendingNews(data.news || []);
       } catch (error) {
@@ -27,7 +29,7 @@ const TrendingMarquee = () => {
   const handleTrendingClick = async (newsItem) => {
     try {
       // Track click for trending news too
-      await fetch("http://localhost:4000/news/track-click", {
+      await fetch("https://api.streambriefing.com/news/track-click", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,8 +56,8 @@ const TrendingMarquee = () => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-3 mb-6 shadow-md">
-      <div className="container mx-auto px-4">
+    <div className="bg-gradient-to-r from-[#763e3e] to-[#9a5252] text-white py-3 mb-6 shadow-md">
+      <div className="container marquee-container mx-auto px-4">
         <div className="flex items-center">
           <div className="flex-shrink-0 mr-4">
             <span className="bg-white text-red-600 px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide">
@@ -68,7 +70,7 @@ const TrendingMarquee = () => {
                 {trendingNews.map((item, index) => (
                   <span
                     key={`${item.link}-${index}`}
-                    className="inline-block mr-12 cursor-pointer hover:text-yellow-200 transition-colors"
+                    className="inline-block mr-12 cursor-pointer hover:text-[#b97f7f] transition-colors"
                     onClick={() => handleTrendingClick(item)}
                   >
                     <span className="font-semibold">{item.title}</span>

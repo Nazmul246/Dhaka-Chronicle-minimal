@@ -33,10 +33,10 @@ const CategoryNewsPage = () => {
     setCurrentPage(1);
 
     // First, try to use the new category-specific endpoint
-    const categoryUrl = `http://localhost:4000/news/category/${category}`;
+    const categoryUrl = `https://api.streambriefing.com/news/category/${category}`;
 
     const fetchUrl = selectedDate
-      ? `http://localhost:4000/news/bydate?date=${selectedDate}`
+      ? `https://api.streambriefing.com/news/bydate?date=${selectedDate}`
       : categoryUrl;
 
     fetch(fetchUrl)
@@ -140,7 +140,7 @@ const CategoryNewsPage = () => {
           </p>
           <button
             onClick={() => navigate("/")}
-            className="px-6 py-2 bg-[#1f2a44] text-white rounded-full hover:bg-blue-600 transition-colors"
+            className="px-6 py-2 bg-[#1f2a44] text-white rounded-full hover:bg-[#763e3e] transition-colors"
           >
             Back to Home
           </button>

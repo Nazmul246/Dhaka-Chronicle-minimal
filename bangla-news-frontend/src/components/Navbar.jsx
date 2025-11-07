@@ -25,16 +25,16 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar relative z-50 bg-gray-200">
+      <nav className="navbar relative z-50 bg-white">
         {/* Desktop + Tablet */}
-        <ul className="hidden md:flex justify-between items-center pt-4 pb-4 px-4 lg:px-60">
+        <ul className="hidden md:flex justify-between items-center pt-4 pb-4 px-4 navbar-container">
           {/* Logo */}
           <a href="/">
             <li className="font-bold text-xl">
               <img
-                src="/assets/img/Logo.png"
-                width="200px"
-                alt="Dhaka Chronicle Vault"
+                src="/assets/img/stream-briefing.png"
+                width="300px"
+                alt="Stream Briefing"
               />
             </li>
           </a>
@@ -68,7 +68,7 @@ const Navbar = () => {
 
           {/* Date + Hamburger */}
           <li className="flex items-center gap-8">
-            <p className="flex items-center gap-2 text-sm text-[#0097b2] font-bold">
+            <p className="flex items-center gap-2 text-sm text-[#763e3e] font-bold">
               <SlCalender />
               {date.toDateString()}
             </p>
@@ -116,9 +116,9 @@ const Navbar = () => {
           <div className="flex justify-between items-center">
             <a href="/">
               <img
-                src="/assets/img/Logo.png"
+                src="/assets/img/stream-briefing.png"
                 width="150px"
-                alt="Dhaka Chronicle Vault"
+                alt="Stream Briefing"
               />
             </a>
 

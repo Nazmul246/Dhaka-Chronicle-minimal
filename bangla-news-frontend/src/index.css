@@ -98,7 +98,7 @@ body {
   display: block;
   padding: 10px 20px;
   color: #fff;
-  background-color: #0097b2;
+  background-color: #763e3e;
   overflow: hidden;
   box-shadow: inset 0px 0px 0px 1px transparent;
 }
@@ -170,6 +170,23 @@ body {
 .react-datepicker__day:hover:not(.react-datepicker__day--disabled) {
   background-color: rgba(255, 255, 255, 0.2);
   cursor: pointer;
+}
+
+.navbar-container {
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.animated-type-text {
+  background: white;
+  padding: 10px 20px;
+  border-radius: 50px;
+}
+
+/* marquee text */
+.marquee-container {
+  max-width: 100% !important;
+  width: 100% !important;
 }
 
 @media (max-width: 768px) {

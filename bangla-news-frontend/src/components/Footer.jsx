@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const Footer = () => {
   const [siteTexts, setSiteTexts] = useState({});
   useEffect(() => {
-    fetch("http://localhost:4000/news/site-config")
+    fetch("https://api.streambriefing.com/news/site-config")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.texts) {
@@ -20,7 +20,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#1f2a44] text-white mt-12">
-      <div className="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-20">
+      <div className="max-w-[1500px] mx-auto px-6 lg:px-0 py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-[2fr_1fr_1fr_1fr] gap-8 lg:gap-20">
         {/* Site Title / Description */}
         <div>
           <h2 className="text-2xl font-bold tracking-wide mb-4">
